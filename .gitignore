@@ -1,0 +1,31 @@
+# --- Node ---
+node_modules/
+dist/
+build/
+.temp/
+.cache/
+
+# --- Vite ---
+.vite/
+*.log
+
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Env files ---
+.env
+.env.*
+
+# --- Editor configs ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- System files ---
+.DS_Store
+Thumbs.db
+
+# --- ShadCN ---
+/components.json # archivo generado por shadcn UI CLI
+package-lock.json
