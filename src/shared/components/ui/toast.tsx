@@ -13,7 +13,7 @@ export function ToastContainer() {
           className={cn(
             'flex items-center gap-2 p-4 rounded-lg shadow-lg text-white min-w-[300px]',
             {
-              'bg-green-500': toast.type === 'success',
+              'bg-cyan-600': toast.type === 'success',
               'bg-red-500': toast.type === 'error',
               'bg-yellow-500': toast.type === 'warning',
             }
