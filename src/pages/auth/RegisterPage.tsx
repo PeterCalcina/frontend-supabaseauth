@@ -1,50 +1,50 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { useAuthStore } from '@/stores/authStore'
 import { useToastStore } from '@/stores/toastStore'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Card, CardHeader, CardContent, CardFooter } from '@/shared/components/ui/card'
 
-export function LoginPage() {
+export function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const location = useLocation()
-  const { setAuth } = useAuthStore()
   const { addToast } = useToastStore()
-
-  const from = location.state?.from?.pathname || '/dashboard'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (password !== confirmPassword) {
+      addToast('error', 'Las contraseñas no coinciden')
+      return
+    }
+
     setLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
       })
 
       if (error) throw error
 
-      setAuth(data.user, data.session.access_token)
-      addToast('success', '¡Bienvenido! Has iniciado sesión correctamente.')
-      navigate(from, { replace: true })
+      addToast('success', '¡Cuenta creada exitosamente! Por favor, verifica tu email.')
+      navigate('/login')
     } catch (error) {
-      addToast('error', 'Error al iniciar sesión. Verifica tus credenciales.')
+      addToast('error', 'Error al crear la cuenta. Intenta nuevamente.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <h2 className="text-2xl font-bold text-center">Iniciar Sesión</h2>
+          <h2 className="text-2xl font-bold text-center">Crear Cuenta</h2>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -74,6 +74,19 @@ export function LoginPage() {
                 placeholder="••••••••"
               />
             </div>
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium">
+                Confirmar Contraseña
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button
@@ -81,21 +94,20 @@ export function LoginPage() {
               className="w-full"
               disabled={loading}
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
             </Button>
             <p className="text-sm text-center text-gray-600">
-              ¿No tienes una cuenta?{' '}
+              ¿Ya tienes una cuenta?{' '}
               <Button
                 variant="link"
                 className="p-0"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate('/login')}
               >
-                Regístrate
+                Inicia sesión
               </Button>
             </p>
           </CardFooter>
         </form>
       </Card>
-    </div>
   )
 } 
