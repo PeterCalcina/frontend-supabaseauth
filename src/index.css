@@ -1,68 +1,145 @@
-
 @custom-variant dark (&:is(.dark *));
 @import "tailwindcss";
 
+@theme {
+  --palette-dark-blue: #003f5c;
+  --palette-purple: #58508d;
+  --palette-magenta: #bc5090;
+  --palette-coral: #ff6361;
+  --palette-orange: #ffa600;
+  --palette-white: #f5f5f5;
+}
+:root {
+  --border: var(--palette-dark-blue);
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+  --background: var(--palette-white);
+  --foreground: var(--palette-dark-blue);
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+  --primary: var(--palette-dark-blue);
+  --primary-foreground: var(--palette-white);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+  --secondary: #f0f0f0;
+  --secondary-foreground: var(--palette-purple);
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+  --destructive: var(--palette-coral);
+  --destructive-foreground: var(--palette-white);
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: #f0f0f0;
+  --muted-foreground: var(--palette-purple);
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: var(--palette-orange);
+  --accent-foreground: var(--palette-white);
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+  --popover: var(--palette-white);
+  --popover-foreground: var(--palette-dark-blue);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+  --card: var(--palette-white);
+  --card-foreground: var(--palette-dark-blue);
+  --radius: 0.5rem;
+}
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+/* Dark mode */
+.dark {
+  --border: var(--palette-purple);
 
-    --radius: 0.5rem;
+  --background: var(--palette-dark-blue);
+  --foreground: #f5f6f8;
+
+  --primary: var(--palette-orange);
+  --primary-foreground: var(--palette-dark-blue);
+
+  --secondary: var(--palette-purple);
+  --secondary-foreground: #f5f6f8;
+
+  --destructive: var(--palette-coral);
+  --destructive-foreground: var(--palette-dark-blue);
+
+  --muted: var(--palette-purple);
+  --muted-foreground: #d4d8e0;
+
+  --accent: var(--palette-magenta);
+  --accent-foreground: #f5f6f8;
+
+  --popover: var(--palette-dark-blue);
+  --popover-foreground: #f5f6f8;
+
+  --card: var(--palette-dark-blue);
+  --card-foreground: #f5f6f8;
+}
+
+
+/* Container */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1400px;
   }
+}
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+.bg-border {
+  background-color: var(--border);
+}
+.text-input {
+  color: var(--input);
+}
+.bg-primary {
+  background-color: var(--primary);
+}
+.text-primary-foreground {
+  color: var(--primary-foreground);
+}
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+.bg-card {
+  background-color: var(--card);
+}
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+.text-card-foreground {
+  color: var(--card-foreground);
+}
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+/* Border Radius */
+.rounded-lg {
+  border-radius: var(--radius);
+}
+.rounded-md {
+  border-radius: calc(var(--radius) - 2px);
+}
+.rounded-sm {
+  border-radius: calc(var(--radius) - 4px);
+}
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+/* Animations */
+/* Accordion Down */
+@keyframes accordion-down {
+  from {
+    height: 0;
   }
+  to {
+    height: var(--radix-accordion-content-height); /* You'll need to ensure this CSS variable is set by your JS for Radix components */
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+/* Accordion Up */
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height); /* You'll need to ensure this CSS variable is set by your JS for Radix components */
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
 }
