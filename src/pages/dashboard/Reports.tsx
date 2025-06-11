@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { reportService } from '@/lib/api';
 import { Input } from '@/shared/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Card } from '@/shared/components/ui/card';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import {
   BarChart,
@@ -71,34 +71,34 @@ export function Reports() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Vendido</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card.Root>
+          <Card.Header>
+            <Card.Title>Total Vendido</Card.Title>
+          </Card.Header>
+          <Card.Content>
             <p className="text-3xl font-bold">
               ${report?.total_sold.toFixed(2)}
             </p>
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Valor Actual del Inventario</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card.Root>
+          <Card.Header>
+            <Card.Title>Valor Actual del Inventario</Card.Title>
+          </Card.Header>
+          <Card.Content>
             <p className="text-3xl font-bold">
               ${report?.current_inventory_value.toFixed(2)}
             </p>
-          </CardContent>
-        </Card>
+          </Card.Content>
+        </Card.Root>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Movimientos por Tipo</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>Movimientos por Tipo</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
@@ -110,8 +110,8 @@ export function Reports() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </div>
   );
 } 

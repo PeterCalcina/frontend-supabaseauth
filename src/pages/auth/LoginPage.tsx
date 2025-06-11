@@ -5,12 +5,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useToastStore } from "@/stores/toastStore";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/shared/components/ui/card";
+import { Card } from "@/shared/components/ui/card";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -46,12 +41,12 @@ export function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
+    <Card.Root className="w-full max-w-md">
+      <Card.Header>
         <h2 className="text-2xl font-bold text-center">Iniciar Sesión</h2>
-      </CardHeader>
+      </Card.Header>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <Card.Content className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
               Email
@@ -78,8 +73,8 @@ export function LoginPage() {
               placeholder="••••••••"
             />
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        </Card.Content>
+        <Card.Footer className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </Button>
@@ -93,8 +88,8 @@ export function LoginPage() {
               Regístrate
             </Button>
           </p>
-        </CardFooter>
+        </Card.Footer>
       </form>
-    </Card>
+    </Card.Root>
   );
 }

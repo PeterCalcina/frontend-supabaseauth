@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { useToastStore } from '@/stores/toastStore'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
-import { Card, CardHeader, CardContent, CardFooter } from '@/shared/components/ui/card'
+import { Card } from '@/shared/components/ui/card'
 
 export function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -42,12 +42,12 @@ export function RegisterPage() {
   }
 
   return (
-      <Card className="w-full max-w-md">
-        <CardHeader>
+      <Card.Root className="w-full max-w-md">
+        <Card.Header>
           <h2 className="text-2xl font-bold text-center">Crear Cuenta</h2>
-        </CardHeader>
+        </Card.Header>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <Card.Content className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
                 Email
@@ -87,8 +87,8 @@ export function RegisterPage() {
                 placeholder="••••••••"
               />
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
+          </Card.Content>
+          <Card.Footer className="flex flex-col gap-4">
             <Button
               type="submit"
               className="w-full"
@@ -106,8 +106,8 @@ export function RegisterPage() {
                 Inicia sesión
               </Button>
             </p>
-          </CardFooter>
+          </Card.Footer>
         </form>
-      </Card>
+      </Card.Root>
   )
 } 

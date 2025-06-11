@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useToastStore } from '@/stores/toastStore';
 import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Card } from '@/shared/components/ui/card';
 
 export function Profile() {
   const navigate = useNavigate();
@@ -24,11 +24,11 @@ export function Profile() {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Información del Usuario</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>Información del Usuario</Card.Title>
+        </Card.Header>
+        <Card.Content>
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">Email</h3>
@@ -49,8 +49,8 @@ export function Profile() {
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </Card.Content>
+      </Card.Root>
     </div>
   );
 } 
