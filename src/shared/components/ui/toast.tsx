@@ -1,6 +1,6 @@
 import { useToastStore } from '@/stores/toastStore'
 import { CheckCircle, XCircle, AlertCircle, X, Info } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/lib/utils'
 
 export function ToastContainer() {
   const { toasts, removeToast } = useToastStore()

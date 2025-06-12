@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/shared/lib/supabase";
 import { useAuthStore } from "@/stores/authStore";
 import { useToastStore } from "@/stores/toastStore";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Card } from "@/shared/components/ui/card";
+import { Loader } from "@/shared/components/ui/loader";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -87,7 +88,7 @@ export function LoginPage() {
         </Card.Content>
         <Card.Footer className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+            {loading ? <Loader size="sm" className="mx-auto" /> : "Iniciar Sesión"}
           </Button>
           <p className="text-sm text-center text-gray-600">
             ¿No tienes una cuenta?{" "}

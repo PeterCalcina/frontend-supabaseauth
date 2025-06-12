@@ -1,17 +1,14 @@
 import { InventoryItem } from '@/shared/types/inventory';
 import { useAuthFetcher } from '../client/fetcher';
 import { API_ENDPOINTS } from '../endpoints';
-import { useToastStore } from '@/stores/toastStore';
 
 
 export const inventoryService = () => {
   const fetcher = useAuthFetcher();
-  const { addToast } = useToastStore();
 
   return {
     list: async () => {
-      const { data, message } = await fetcher<InventoryItem[]>(API_ENDPOINTS.inventory.list);
-      addToast("info", message);
+      const { data } = await fetcher<InventoryItem[]>(API_ENDPOINTS.inventory.list);
       return { data };
     },
 
