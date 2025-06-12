@@ -1,11 +1,8 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { productService, type Product } from '@/lib/api';
-import { useToastStore } from '@/stores/toastStore';
-import { Button } from '@/shared/components/ui/button';
+import { useState } from "react";
+import { format, isValid } from "date-fns";
+import { es } from "date-fns/locale";
+import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/shared/components/ui/button";
 import {
   Table,
   TableBody,
@@ -13,41 +10,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/shared/components/ui/table';
-import { Skeleton } from '@/shared/components/ui/skeleton';
+} from "@/shared/components/ui/table";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/shared/components/ui/dialog';
-import { ProductForm } from './components/ProductForm';
+} from "@/shared/components/ui/dialog";
+import { ProductForm } from "./components/ProductForm";
+import { InventoryItem } from "@/shared/types/inventory";
+import { useListInventory } from "@/api/hooks/useListInventory";
 
 export function Inventory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const queryClient = useQueryClient();
-  const { addToast } = useToastStore();
+  const [selectedProduct, setSelectedProduct] = useState<InventoryItem | null>(
+    null
+  );
+  const { data: products, isLoading } = useListInventory();
 
-  const { data: products, isLoading } = useQuery({
-    queryKey: ['products'],
-    queryFn: productService.list,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: productService.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      addToast('success', 'Producto eliminado correctamente');
-    },
-    onError: (error) => {
-      addToast('error', 'Error al eliminar el producto');
-      console.error(error);
-    },
-  });
-
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: InventoryItem) => {
     setSelectedProduct(product);
     setIsDialogOpen(true);
   };
@@ -85,15 +68,13 @@ export function Inventory() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {selectedProduct ? 'Editar Producto' : 'Nuevo Producto'}
+                {selectedProduct ? "Editar Producto" : "Nuevo Producto"}
               </DialogTitle>
             </DialogHeader>
             <ProductForm
               product={selectedProduct}
               onSuccess={() => {
                 setIsDialogOpen(false);
-                queryClient.invalidateQueries({ queryKey: ['products'] });
-                addToast('success', 'Producto guardado correctamente');
               }}
             />
           </DialogContent>
@@ -113,14 +94,20 @@ export function Inventory() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products?.map((product) => (
+            {products?.data?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.sku}</TableCell>
-                <TableCell>{product.quantity}</TableCell>
+                <TableCell>{product.qty}</TableCell>
                 <TableCell>${product.cost.toFixed(2)}</TableCell>
                 <TableCell>
-                  {format(new Date(product.last_entry), 'PPP', { locale: es })}
+                  {
+                    product.lastEntry && isValid(new Date(product.lastEntry))
+                      ? format(new Date(product.lastEntry), "PPP", {
+                          locale: es,
+                        })
+                      : "Sin fecha"
+                  }
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
@@ -133,7 +120,9 @@ export function Inventory() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => deleteMutation.mutate(product.id)}
+                    onClick={() => {
+                      console.log(product);
+                    }}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -145,4 +134,4 @@ export function Inventory() {
       </div>
     </div>
   );
-} 
+}

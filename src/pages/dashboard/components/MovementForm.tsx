@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { type Product, type Movement } from '@/lib/api';
 import { Button } from '@/shared/components/ui/button';
 import {
   Form,
@@ -20,6 +19,7 @@ import {
   SelectValue,
 } from '@/shared/components/ui/select';
 import { Textarea } from '@/shared/components/ui/textarea';
+import { Movement } from '@/shared/types/movement';
 
 const movementSchema = z.object({
   type: z.enum(['entry', 'exit', 'expiration', 'sale']),
@@ -32,8 +32,8 @@ const movementSchema = z.object({
 type MovementFormValues = z.infer<typeof movementSchema>;
 
 interface MovementFormProps {
-  products: Product[];
-  onSubmit: (values: Omit<Movement, 'id' | 'created_at'>) => void;
+  products: Movement[];
+  onSubmit: (values: MovementFormValues) => void;
 }
 
 export function MovementForm({ products, onSubmit }: MovementFormProps) {
@@ -100,7 +100,7 @@ export function MovementForm({ products, onSubmit }: MovementFormProps) {
                 <SelectContent>
                   {products.map((product) => (
                     <SelectItem key={product.id} value={product.id}>
-                      {product.name}
+                      {product.itemId}
                     </SelectItem>
                   ))}
                 </SelectContent>

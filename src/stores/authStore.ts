@@ -1,18 +1,32 @@
 import { create } from 'zustand'
 import { User } from '@supabase/supabase-js'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface AuthState {
   user: User | null
   token: string | null
+  isAuthenticated: boolean
   setAuth: (user: User, token: string) => void
   logout: () => void
-  isAuthenticated: boolean
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
-  logout: () => set({ user: null, token: null, isAuthenticated: false }),
-  isAuthenticated: false,
-}))
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
+      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+    }),
+    {
+      name: "auth",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+);

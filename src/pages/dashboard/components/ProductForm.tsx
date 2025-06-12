@@ -1,9 +1,7 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { productService, type Product } from '@/lib/api';
-import { Button } from '@/shared/components/ui/button';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,20 +9,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/shared/components/ui/form';
-import { Input } from '@/shared/components/ui/input';
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
+import { InventoryItem } from "@/shared/types/inventory";
+import { useCreateInventory } from "@/api/hooks/useCreateInventory";
+import { useUpdateInventory } from "@/api/hooks/useUpdateInventory";
 
 const productSchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido'),
-  sku: z.string().min(1, 'El SKU es requerido'),
-  quantity: z.number().min(0, 'La cantidad debe ser mayor o igual a 0'),
-  cost: z.number().min(0, 'El costo debe ser mayor o igual a 0'),
+  name: z.string().min(1, "El nombre es requerido"),
+  sku: z.string().min(1, "El SKU es requerido"),
+  qty: z.number().min(0, "La cantidad debe ser mayor o igual a 0"),
+  cost: z.number().min(0, "El costo debe ser mayor o igual a 0"),
+  lastEntry: z.date().optional(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
-  product?: Product | null;
+  product: InventoryItem | null;
   onSuccess: () => void;
 }
 
@@ -32,25 +34,28 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: product?.name ?? '',
-      sku: product?.sku ?? '',
-      quantity: product?.quantity ?? 0,
+      name: product?.name ?? "",
+      sku: product?.sku ?? "",
+      qty: product?.qty ?? 0,
       cost: product?.cost ?? 0,
+      lastEntry: product?.lastEntry,
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: async (values: ProductFormValues) => {
-      if (product) {
-        return productService.update(product.id, values);
-      }
-      return productService.create(values);
-    },
-    onSuccess,
-  });
+  const createInventory = useCreateInventory();
+  const updateInventory = useUpdateInventory();
+
+  const isLoading = createInventory.isPending || updateInventory.isPending;
 
   const onSubmit = (values: ProductFormValues) => {
-    mutation.mutate(values);
+    product
+      ? updateInventory.mutateAsync({
+          id: product.id,
+          data: values,
+        })
+      : createInventory.mutateAsync(values);
+
+    onSuccess();
   };
 
   return (
@@ -86,7 +91,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 
         <FormField
           control={form.control}
-          name="quantity"
+          name="qty"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Cantidad</FormLabel>
@@ -121,14 +126,10 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={mutation.isPending}>
-          {mutation.isPending
-            ? 'Guardando...'
-            : product
-            ? 'Actualizar'
-            : 'Crear'}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Guardando..." : product ? "Actualizar" : "Crear"}
         </Button>
       </form>
     </Form>
   );
-} 
+}

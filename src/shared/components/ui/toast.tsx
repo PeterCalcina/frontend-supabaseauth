@@ -1,5 +1,5 @@
 import { useToastStore } from '@/stores/toastStore'
-import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react'
+import { CheckCircle, XCircle, AlertCircle, X, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function ToastContainer() {
@@ -16,12 +16,14 @@ export function ToastContainer() {
               'bg-cyan-600': toast.type === 'success',
               'bg-red-500': toast.type === 'error',
               'bg-yellow-500': toast.type === 'warning',
+              'bg-blue-500': toast.type === 'info',
             }
           )}
         >
           {toast.type === 'success' && <CheckCircle className="w-5 h-5" />}
           {toast.type === 'error' && <XCircle className="w-5 h-5" />}
           {toast.type === 'warning' && <AlertCircle className="w-5 h-5" />}
+          {toast.type === 'info' && <Info className="w-5 h-5" />}
           <p className="flex-1">{toast.message}</p>
           <button
             onClick={() => removeToast(toast.id)}

@@ -22,6 +22,12 @@ export function LoginPage() {
     e.preventDefault();
     setLoading(true);
 
+    if (!email || !password) {
+      addToast("warning", "Por favor completa todos los campos.");
+      return;
+    }
+
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -34,7 +40,8 @@ export function LoginPage() {
       addToast("success", "¡Bienvenido! Has iniciado sesión correctamente.");
       navigate(from, { replace: true });
     } catch (error) {
-      addToast("error", "Error al iniciar sesión. Verifica tus credenciales.");
+      const message = error instanceof Error ? error.message : "Error al iniciar sesión. Verifica tus credenciales.";
+      addToast("error", message);
     } finally {
       setLoading(false);
     }
@@ -58,6 +65,8 @@ export function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="tu@email.com"
+              aria-invalid={!email ? true : false}
+              aria-describedby="email-error"
             />
           </div>
           <div className="space-y-2">
@@ -71,6 +80,8 @@ export function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
+              aria-invalid={!password ? true : false}
+              aria-describedby="password-error"
             />
           </div>
         </Card.Content>
