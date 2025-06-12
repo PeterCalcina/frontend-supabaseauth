@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/shared/components/ui/button";
 import {
   Form,
@@ -14,16 +13,11 @@ import { Input } from "@/shared/components/ui/input";
 import { InventoryItem } from "@/shared/types/inventory";
 import { useCreateInventory } from "@/api/hooks/useCreateInventory";
 import { useUpdateInventory } from "@/api/hooks/useUpdateInventory";
-
-const productSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  sku: z.string().min(1, "El SKU es requerido"),
-  qty: z.number().min(0, "La cantidad debe ser mayor o igual a 0"),
-  cost: z.number().min(0, "El costo debe ser mayor o igual a 0"),
-  lastEntry: z.date().optional(),
-});
-
-type ProductFormValues = z.infer<typeof productSchema>;
+import {
+  createInventorySchema,
+  InventoryDto,
+} from "@/shared/schemas/inventory.schema";
+import { Loader } from "@/shared/components/ui/loader";
 
 interface ProductFormProps {
   product: InventoryItem | null;
@@ -31,14 +25,14 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ product, onSuccess }: ProductFormProps) {
-  const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
+  const form = useForm<InventoryDto>({
+    resolver: zodResolver(createInventorySchema),
     defaultValues: {
       name: product?.name ?? "",
       sku: product?.sku ?? "",
       qty: product?.qty ?? 0,
       cost: product?.cost ?? 0,
-      lastEntry: product?.lastEntry,
+      lastEntry: product?.lastEntry ? new Date(product.lastEntry) : undefined,
     },
   });
 
@@ -47,13 +41,15 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 
   const isLoading = createInventory.isPending || updateInventory.isPending;
 
-  const onSubmit = (values: ProductFormValues) => {
-    product
-      ? updateInventory.mutateAsync({
-          id: product.id,
-          data: values,
-        })
-      : createInventory.mutateAsync(values);
+  const onSubmit = async (values: InventoryDto) => {
+    if (product) {
+      await updateInventory.mutateAsync({
+        id: product.id,
+        data: values,
+      });
+    } else {
+      await createInventory.mutateAsync(values);
+    }
 
     onSuccess();
   };
@@ -127,7 +123,13 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Guardando..." : product ? "Actualizar" : "Crear"}
+          {isLoading ? (
+            <Loader size="sm" message="Guardando..." />
+          ) : product ? (
+            "Actualizar"
+          ) : (
+            "Crear"
+          )}
         </Button>
       </form>
     </Form>

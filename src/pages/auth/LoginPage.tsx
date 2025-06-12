@@ -88,7 +88,7 @@ export function LoginPage() {
         </Card.Content>
         <Card.Footer className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? <Loader size="sm" className="mx-auto" /> : "Iniciar Sesión"}
+            {loading ? <Loader size="sm" message="Iniciando sesión..." /> : "Iniciar Sesión"}
           </Button>
           <p className="text-sm text-center text-gray-600">
             ¿No tienes una cuenta?{" "}

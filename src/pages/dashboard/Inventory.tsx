@@ -18,17 +18,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
+  DialogFooter,
 } from "@/shared/components/ui/dialog";
 import { ProductForm } from "./components/ProductForm";
 import { InventoryItem } from "@/shared/types/inventory";
 import { useListInventory } from "@/api/hooks/useListInventory";
+import { useDeleteInventory } from "@/api/hooks/useDeleteInventory";
 
 export function Inventory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<InventoryItem | null>(
-    null
-  );
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<InventoryItem | null>(null);
   const { data: products, isLoading } = useListInventory();
+  const deleteInventory = useDeleteInventory();
 
   const handleEdit = (product: InventoryItem) => {
     setSelectedProduct(product);
@@ -38,6 +41,19 @@ export function Inventory() {
   const handleCreate = () => {
     setSelectedProduct(null);
     setIsDialogOpen(true);
+  };
+
+  const handleDelete = (product: InventoryItem) => {
+    setSelectedProduct(product);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (selectedProduct) {
+      await deleteInventory.mutateAsync(selectedProduct.id);
+      setIsDeleteDialogOpen(false);
+      setSelectedProduct(null);
+    }
   };
 
   if (isLoading) {
@@ -99,15 +115,13 @@ export function Inventory() {
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.sku}</TableCell>
                 <TableCell>{product.qty}</TableCell>
-                <TableCell>${product.cost.toFixed(2)}</TableCell>
+                <TableCell>Bs.{product.cost.toFixed(2)}</TableCell>
                 <TableCell>
-                  {
-                    product.lastEntry && isValid(new Date(product.lastEntry))
-                      ? format(new Date(product.lastEntry), "PPP", {
-                          locale: es,
-                        })
-                      : "Sin fecha"
-                  }
+                  {product.lastEntry && isValid(new Date(product.lastEntry))
+                    ? format(new Date(product.lastEntry), "PPP", {
+                        locale: es,
+                      })
+                    : "Sin fecha"}
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
@@ -120,9 +134,7 @@ export function Inventory() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => {
-                      console.log(product);
-                    }}
+                    onClick={() => handleDelete(product)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -132,6 +144,32 @@ export function Inventory() {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¿Eliminar producto?</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar el producto {selectedProduct?.name}? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteInventory.isPending}
+            >
+              {deleteInventory.isPending ? "Eliminando..." : "Eliminar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

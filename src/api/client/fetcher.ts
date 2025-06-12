@@ -9,10 +9,6 @@ export const useAuthFetcher = () => {
   ): Promise<Response<T>> => {
     const currentToken = useAuthStore.getState().token;
 
-    console.log(currentToken);
-    console.log(url);
-    console.log(options);
-
     const res = await fetch(url, {
       ...options,
       headers: {
