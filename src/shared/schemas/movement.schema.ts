@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { MovementType } from "@/shared/enum/movement-type.enum";
 
-export const createMovementSchema = z.object({
+export const BaseMovementSchema = z.object({
   type: z.nativeEnum(MovementType),
   name: z.string().min(1, "El nombre es requerido"),
   batchCode: z.string().min(1, "El código de lote es requerido"),
@@ -12,5 +12,6 @@ export const createMovementSchema = z.object({
   description: z.string().min(1, "La descripción es requerida"),
 });
 
-export type MovementDto = z.infer<typeof createMovementSchema>;
+export const entryMovementSchema = z.object(BaseMovementSchema.shape);
+export type EntryMovementDto = z.infer<typeof entryMovementSchema>;
 

@@ -1,6 +1,7 @@
 import { Movement } from '@/shared/types/movement';
 import { useAuthFetcher } from '../client/fetcher';
 import { API_ENDPOINTS_MOVEMENT } from '../endpoints';
+import { EntryMovementDto } from '@/shared/schemas/movement.schema';
 
 
 export const movementService = () => {
@@ -12,9 +13,9 @@ export const movementService = () => {
       return { data };
     },
 
-    get: (id: string) => fetcher<Movement>(API_ENDPOINTS_MOVEMENT.get(id)),
+    get: (id: number) => fetcher<Movement>(API_ENDPOINTS_MOVEMENT.get(id)),
 
-    createEntry: (data: Omit<Movement, 'id' | 'createdAt' | 'updatedAt'>) =>
+    createEntry: (data: EntryMovementDto) =>
       fetcher<Movement>(API_ENDPOINTS_MOVEMENT.createEntry, {
         method: 'POST',
         body: JSON.stringify(data),

@@ -13,7 +13,7 @@ export const inventoryService = () => {
       return { data };
     },
 
-    get: (id: string) => fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.get(id)),
+    get: (id: number) => fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.get(id)),
 
     create: (data: CreateInventoryDto) =>
       fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.create, {

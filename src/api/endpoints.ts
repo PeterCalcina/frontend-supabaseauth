@@ -4,7 +4,7 @@ export const API_ENDPOINTS_INVENTORY = {
   inventory: {
     list: `${PREFIX}/inventory`,
     create: `${PREFIX}/inventory`,
-    get: (id: string) => `${PREFIX}/inventory/${id}`,
+    get: (id: number) => `${PREFIX}/inventory/${id}`,
     update: (id: string) => `${PREFIX}/inventory/${id}`,
     delete: (id: string) => `${PREFIX}/inventory/${id}`,
   },
@@ -12,7 +12,7 @@ export const API_ENDPOINTS_INVENTORY = {
 
 export const API_ENDPOINTS_MOVEMENT = {
   list: `${PREFIX}/movement`,
-  get: (id: string) => `${PREFIX}/movement/${id}`,
+  get: (id: number) => `${PREFIX}/movement/${id}`,
   createEntry: `${PREFIX}/movement/entry`,
   createSale: `${PREFIX}/movement/sale`,
   createExpiration: `${PREFIX}/movement/expiration`,

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToastStore } from "@/stores/toastStore";
 import { movementService } from "@/api/services/movement.service";
-import { Movement } from "@/shared/types/movement";
+import { EntryMovementDto } from "@/shared/schemas/movement.schema";
 
 export const useCreateEntryMovement = () => {
   const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export const useCreateEntryMovement = () => {
 
   return useMutation({
     mutationFn: async (
-      data: Omit<Movement, "id" | "createdAt" | "updatedAt">
+      data: EntryMovementDto
     ) =>
       await createEntryMovement(data),
 

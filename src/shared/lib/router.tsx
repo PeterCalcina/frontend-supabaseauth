@@ -6,7 +6,6 @@ import { Inventory } from '@/pages/dashboard/Inventory';
 import { Movements } from '@/pages/dashboard/Movements';
 import { Expirations } from '@/pages/dashboard/Expirations';
 import { Reports } from '@/pages/dashboard/Reports';
-import { Profile } from '@/pages/dashboard/Profile';
 
 // Stores and Layouts
 import { useAuthStore } from '@/stores/authStore';
@@ -69,11 +68,7 @@ export const router = createBrowserRouter([
           {
             path: 'reports',
             element: <Reports />,
-          },
-          {
-            path: 'profile',
-            element: <Profile />,
-          },
+          }
         ],
       },
     ],

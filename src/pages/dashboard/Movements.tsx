@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { useToastStore } from '@/stores/toastStore';
+import { Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import {
   Table,
@@ -21,130 +19,89 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/components/ui/dialog';
-import { ProductForm } from './components/ProductForm';
+import { EntryMovementForm } from './components/EntryMovementForm';
 import { Movement } from '@/shared/types/movement';
+import { useListInventory } from '@/api/hooks/inventory/useListInventory';
+import { useListMovements } from '@/api/hooks/movement/useListMovements';
 
 export function Movements() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Movement | null>(null);
-  const queryClient = useQueryClient();
-  const { addToast } = useToastStore();
+  const { data: products, isLoading: isLoadingProducts } = useListInventory();
+  const { data: movements, isLoading: isLoadingMovements } = useListMovements();
 
-  return <div>Movements</div>;
+  const isLoading = isLoadingProducts || isLoadingMovements;
 
-  // const { data: products, isLoading } = useQuery({
-  //   queryKey: ['products'],
-  //   queryFn: productService.list,
-  // });
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-10 w-[100px]" />
+        </div>
+        <div className="border rounded-lg">
+          <Skeleton className="h-[400px]" />
+        </div>
+      </div>
+    );
+  }
 
-  // const deleteMutation = useMutation({
-  //   mutationFn: productService.delete,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['products'] });
-  //     addToast('success', 'Producto eliminado correctamente');
-  //   },
-  //   onError: (error) => {
-  //     addToast('error', 'Error al eliminar el producto');
-  //     console.error(error);
-  //   },
-  // });
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Movimientos</h1>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Entrada de producto
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Nuevo Movimiento de Entrada</DialogTitle>
+            </DialogHeader>
+            <EntryMovementForm
+              products={products?.data || []}
+              onSuccess={() => {
+                setIsDialogOpen(false);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
 
-  // const handleEdit = (product: Product) => {
-  //   setSelectedProduct(product);
-  //   setIsDialogOpen(true);
-  // };
-
-  // const handleCreate = () => {
-  //   setSelectedProduct(null);
-  //   setIsDialogOpen(true);
-  // };
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="space-y-4">
-  //       <div className="flex justify-between items-center">
-  //         <Skeleton className="h-8 w-[200px]" />
-  //         <Skeleton className="h-10 w-[100px]" />
-  //       </div>
-  //       <div className="border rounded-lg">
-  //         <Skeleton className="h-[400px]" />
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // return (
-  //   <div className="space-y-4">
-  //     <div className="flex justify-between items-center">
-  //       <h1 className="text-2xl font-bold">Inventario</h1>
-  //       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-  //         <DialogTrigger asChild>
-  //           <Button onClick={handleCreate}>
-  //             <Plus className="mr-2 h-4 w-4" />
-  //             Nuevo Producto
-  //           </Button>
-  //         </DialogTrigger>
-  //         <DialogContent>
-  //           <DialogHeader>
-  //             <DialogTitle>
-  //               {selectedProduct ? 'Editar Producto' : 'Nuevo Producto'}
-  //             </DialogTitle>
-  //           </DialogHeader>
-  //           <ProductForm
-  //             product={selectedProduct}
-  //             onSuccess={() => {
-  //               setIsDialogOpen(false);
-  //               queryClient.invalidateQueries({ queryKey: ['products'] });
-  //               addToast('success', 'Producto guardado correctamente');
-  //             }}
-  //           />
-  //         </DialogContent>
-  //       </Dialog>
-  //     </div>
-
-  //     <div className="border rounded-lg">
-  //       <Table>
-  //         <TableHeader>
-  //           <TableRow>
-  //             <TableHead>Nombre</TableHead>
-  //             <TableHead>SKU</TableHead>
-  //             <TableHead>Cantidad</TableHead>
-  //             <TableHead>Costo</TableHead>
-  //             <TableHead>Última Entrada</TableHead>
-  //             <TableHead className="text-right">Acciones</TableHead>
-  //           </TableRow>
-  //         </TableHeader>
-  //         <TableBody>
-  //           {products?.map((product) => (
-  //             <TableRow key={product.id}>
-  //               <TableCell>{product.name}</TableCell>
-  //               <TableCell>{product.sku}</TableCell>
-  //               <TableCell>{product.quantity}</TableCell>
-  //               <TableCell>${product.cost.toFixed(2)}</TableCell>
-  //               <TableCell>
-  //                 {format(new Date(product.last_entry), 'PPP', { locale: es })}
-  //               </TableCell>
-  //               <TableCell className="text-right">
-  //                 <Button
-  //                   variant="ghost"
-  //                   size="icon"
-  //                   onClick={() => handleEdit(product)}
-  //                 >
-  //                   <Pencil className="h-4 w-4" />
-  //                 </Button>
-  //                 <Button
-  //                   variant="ghost"
-  //                   size="icon"
-  //                   onClick={() => deleteMutation.mutate(product.id)}
-  //                 >
-  //                   <Trash2 className="h-4 w-4" />
-  //                 </Button>
-  //               </TableCell>
-  //             </TableRow>
-  //           ))}
-  //         </TableBody>
-  //       </Table>
-  //     </div>
-  //   </div>
-  // );
+      <div className="border rounded-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Tipo</TableHead>
+              <TableHead>Producto</TableHead>
+              <TableHead>Lote</TableHead>
+              <TableHead>Cantidad</TableHead>
+              <TableHead>Costo Unitario</TableHead>
+              <TableHead>Fecha de Expiración</TableHead>
+              <TableHead>Descripción</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {movements?.data?.map((movement: Movement) => (
+              <TableRow key={movement.id}>
+                <TableCell>{movement.type}</TableCell>
+                <TableCell>{movement.itemId}</TableCell>
+                <TableCell>{movement.batchCode}</TableCell>
+                <TableCell>{movement.quantity}</TableCell>
+                <TableCell>Bs.{movement.unitCost.toFixed(2)}</TableCell>
+                <TableCell>
+                  {format(new Date(movement.expirationDate), 'PPP', {
+                    locale: es,
+                  })}
+                </TableCell>
+                <TableCell>{movement.description}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
 } 
