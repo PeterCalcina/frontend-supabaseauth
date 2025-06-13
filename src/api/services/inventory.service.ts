@@ -1,6 +1,7 @@
 import { InventoryItem } from '@/shared/types/inventory';
 import { useAuthFetcher } from '../client/fetcher';
-import { API_ENDPOINTS } from '../endpoints';
+import { API_ENDPOINTS_INVENTORY } from '../endpoints';
+import { CreateInventoryDto, UpdateInventoryDto } from '@/shared/schemas/inventory.schema';
 
 
 export const inventoryService = () => {
@@ -8,24 +9,26 @@ export const inventoryService = () => {
 
   return {
     list: async () => {
-      const { data } = await fetcher<InventoryItem[]>(API_ENDPOINTS.inventory.list);
+      const { data } = await fetcher<InventoryItem[]>(API_ENDPOINTS_INVENTORY.inventory.list);
       return { data };
     },
 
-    create: (data: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>) =>
-      fetcher<InventoryItem>(API_ENDPOINTS.inventory.create, {
+    get: (id: string) => fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.get(id)),
+
+    create: (data: CreateInventoryDto) =>
+      fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.create, {
         method: 'POST',
         body: JSON.stringify(data),
       }),
 
-    update: (id: string, data: Partial<InventoryItem>) =>
-      fetcher<InventoryItem>(API_ENDPOINTS.inventory.update(id), {
+    update: (id: string, data: UpdateInventoryDto) =>
+      fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.update(id), {
         method: 'PATCH',
         body: JSON.stringify(data),
       }),
 
     delete: (id: string) =>
-      fetcher<void>(API_ENDPOINTS.inventory.delete(id), {
+      fetcher<void>(API_ENDPOINTS_INVENTORY.inventory.delete(id), {
         method: 'DELETE',
       }),
   };

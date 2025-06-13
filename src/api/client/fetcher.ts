@@ -1,4 +1,3 @@
-// src/hooks/useAuthFetcher.ts
 import { useAuthStore } from "@/stores/authStore";
 import { Response } from "@/shared/types/response";
 

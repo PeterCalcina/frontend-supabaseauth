@@ -1,20 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuthFetcher } from "../client/fetcher";
-import { API_ENDPOINTS } from "../endpoints";
-import { InventoryItem } from "@/shared/types/inventory";
 import { useToastStore } from "@/stores/toastStore";
+import { inventoryService } from "@/api/services/inventory.service";
+import { UpdateInventoryDto } from "@/shared/schemas/inventory.schema";
 
 export const useUpdateInventory = () => {
-  const fetcher = useAuthFetcher();
   const queryClient = useQueryClient();
   const { addToast } = useToastStore();
+  const { update: updateInventory } = inventoryService();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<InventoryItem> }) =>
-      await fetcher<InventoryItem>(API_ENDPOINTS.inventory.update(id), {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      }),
+    mutationFn: async ({ id, data }: { id: string; data: UpdateInventoryDto }) =>
+      await updateInventory(id, data),
 
     onSuccess: ({ message }) => {
       addToast("success", message);

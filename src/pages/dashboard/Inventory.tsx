@@ -23,8 +23,8 @@ import {
 } from "@/shared/components/ui/dialog";
 import { ProductForm } from "./components/ProductForm";
 import { InventoryItem } from "@/shared/types/inventory";
-import { useListInventory } from "@/api/hooks/useListInventory";
-import { useDeleteInventory } from "@/api/hooks/useDeleteInventory";
+import { useListInventory } from "@/api/hooks/inventory/useListInventory";
+import { useDeleteInventory } from "@/api/hooks/inventory/useDeleteInventory";
 
 export function Inventory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

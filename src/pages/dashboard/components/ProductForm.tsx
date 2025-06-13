@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -11,14 +11,15 @@ import {
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { InventoryItem } from "@/shared/types/inventory";
-import { useCreateInventory } from "@/api/hooks/useCreateInventory";
-import { useUpdateInventory } from "@/api/hooks/useUpdateInventory";
+import { useCreateInventory } from "@/api/hooks/inventory/useCreateInventory";
+import { useUpdateInventory } from "@/api/hooks/inventory/useUpdateInventory";
 import {
   createInventorySchema,
-  InventoryDto,
+  CreateInventoryDto,
+  UpdateInventoryDto,
+  updateInventorySchema,
 } from "@/shared/schemas/inventory.schema";
 import { Loader } from "@/shared/components/ui/loader";
-import { Status } from "@/shared/enum/status.enum";
 
 interface ProductFormProps {
   product: InventoryItem | null;
@@ -26,31 +27,39 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ product, onSuccess }: ProductFormProps) {
-  const form = useForm<InventoryDto>({
-    resolver: zodResolver(createInventorySchema),
-    defaultValues: {
-      name: product?.name ?? "",
-      sku: product?.sku ?? "",
-      profitMargin: product?.profitMargin ?? 0,
-      qty: product?.qty ?? 0,
-      cost: product?.cost ?? 0,
-      status: product?.status ?? Status.ACTIVE,
-    },
-  });
+  type InventoryFormFields = CreateInventoryDto | UpdateInventoryDto;
+  const form = product
+  ? useForm<UpdateInventoryDto>({
+      resolver: zodResolver(updateInventorySchema),
+      defaultValues: {
+        name: product.name,
+        sku: product.sku,
+        profitMargin: product.profitMargin,
+      },
+    })
+  : useForm<CreateInventoryDto>({
+      resolver: zodResolver(createInventorySchema),
+      defaultValues: {
+        name: "",
+        sku: "",
+        profitMargin: 0,
+      },
+    }) as UseFormReturn<InventoryFormFields>;
+
 
   const createInventory = useCreateInventory();
   const updateInventory = useUpdateInventory();
 
   const isLoading = createInventory.isPending || updateInventory.isPending;
 
-  const onSubmit = async (values: InventoryDto) => {
+  const onSubmit = async (values: CreateInventoryDto | UpdateInventoryDto) => {
     if (product) {
       await updateInventory.mutateAsync({
         id: product.id,
-        data: values,
+        data: values as UpdateInventoryDto,
       });
     } else {
-      await createInventory.mutateAsync(values);
+      await createInventory.mutateAsync(values as CreateInventoryDto);
     }
 
     onSuccess();
@@ -105,7 +114,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
             </FormItem>
           )}
         />
-        
+
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <Loader size="sm" message="Guardando..." />

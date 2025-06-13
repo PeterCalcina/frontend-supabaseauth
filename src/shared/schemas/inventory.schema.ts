@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { Status } from "@/shared/enum/status.enum";
 
-export const createInventorySchema = z.object({
+export const BaseInventorySchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   sku: z.string().min(1, "El SKU es requerido"),
   profitMargin: z.number().min(0, "El margen de ganancia es requerido"),
@@ -11,6 +11,20 @@ export const createInventorySchema = z.object({
   lastEntry: z.date().optional(),
 });
 
-export type InventoryDto = z.infer<typeof createInventorySchema>;
+export const createInventorySchema = BaseInventorySchema.pick({
+  name: true,
+  sku: true,
+  profitMargin: true,
+});
+
+export type CreateInventoryDto = z.infer<typeof createInventorySchema>;
 
 export const updateInventorySchema = createInventorySchema.partial();
+
+export type UpdateInventoryDto = z.infer<typeof updateInventorySchema>;
+
+
+
+
+
+
