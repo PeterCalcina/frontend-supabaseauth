@@ -18,6 +18,7 @@ import {
   InventoryDto,
 } from "@/shared/schemas/inventory.schema";
 import { Loader } from "@/shared/components/ui/loader";
+import { Status } from "@/shared/enum/status.enum";
 
 interface ProductFormProps {
   product: InventoryItem | null;
@@ -30,9 +31,10 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
     defaultValues: {
       name: product?.name ?? "",
       sku: product?.sku ?? "",
+      profitMargin: product?.profitMargin ?? 0,
       qty: product?.qty ?? 0,
       cost: product?.cost ?? 0,
-      lastEntry: product?.lastEntry ? new Date(product.lastEntry) : undefined,
+      status: product?.status ?? Status.ACTIVE,
     },
   });
 
@@ -87,28 +89,10 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 
         <FormField
           control={form.control}
-          name="qty"
+          name="profitMargin"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Cantidad</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Costo</FormLabel>
+              <FormLabel>Margen de Ganancia (%)</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -121,7 +105,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
             </FormItem>
           )}
         />
-
+        
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <Loader size="sm" message="Guardando..." />

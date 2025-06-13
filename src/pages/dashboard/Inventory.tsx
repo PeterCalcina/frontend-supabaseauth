@@ -105,6 +105,7 @@ export function Inventory() {
               <TableHead>SKU</TableHead>
               <TableHead>Cantidad</TableHead>
               <TableHead>Costo</TableHead>
+              <TableHead>Margen de Ganancia</TableHead>
               <TableHead>Última Entrada</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
@@ -116,6 +117,7 @@ export function Inventory() {
                 <TableCell>{product.sku}</TableCell>
                 <TableCell>{product.qty}</TableCell>
                 <TableCell>Bs.{product.cost.toFixed(2)}</TableCell>
+                <TableCell>{product.profitMargin.toFixed(2)}%</TableCell>
                 <TableCell>
                   {product.lastEntry && isValid(new Date(product.lastEntry))
                     ? format(new Date(product.lastEntry), "PPP", {

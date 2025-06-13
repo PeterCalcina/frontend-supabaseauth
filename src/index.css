@@ -92,6 +92,9 @@
 .bg-primary {
   background-color: var(--primary);
 }
+.bg-background {
+  background-color: var(--background);
+}
 .text-primary-foreground {
   color: var(--primary-foreground);
 }
