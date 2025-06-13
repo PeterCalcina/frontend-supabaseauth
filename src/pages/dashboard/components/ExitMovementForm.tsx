@@ -82,10 +82,14 @@ export function ExitMovementForm({ onSuccess }: ExitMovementFormProps) {
         );
       }
     }
-  }, [form.watch("batchCode"), form.watch("itemId"), form.watch("quantity"), movements?.data]);
+  }, [
+    form.watch("batchCode"),
+    form.watch("itemId"),
+    form.watch("quantity"),
+    movements?.data,
+  ]);
 
   const onSubmit = async (values: ExitMovementDto) => {
-    console.log(values);
     await createExitMovement.mutateAsync(values);
     onSuccess();
   };
@@ -166,8 +170,11 @@ export function ExitMovementForm({ onSuccess }: ExitMovementFormProps) {
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? <Loader className="mr-2" /> : null}
-          Registrar Salida
+          {isLoading ? (
+            <Loader message="Registrando salida..." className="mr-2" />
+          ) : (
+            "Registrar Salida"
+          )}
         </Button>
       </form>
     </Form>
