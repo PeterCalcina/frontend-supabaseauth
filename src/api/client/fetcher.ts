@@ -1,20 +1,41 @@
 import { useAuthStore } from "@/stores/authStore";
 import { Response } from "@/shared/types/response";
 
+interface FetcherOptions extends RequestInit {
+  params?: Record<string, any>;
+}
+
 export const useAuthFetcher = () => {
   const fetcher = async <T>(
     url: string,
-    options: RequestInit = {}
+    options: FetcherOptions = {}
   ): Promise<Response<T>> => {
     const currentToken = useAuthStore.getState().token;
 
-    const res = await fetch(url, {
+    const method = options.method?.toUpperCase() || 'GET';
+    let fullUrl = url;
+    let requestBody: BodyInit | undefined;
+
+    if (options.params && (method === 'GET' || method === 'HEAD')) {
+      const queryString = new URLSearchParams(options.params).toString();
+      fullUrl = `${url}?${queryString}`;
+    }
+    else if (options.body && (method !== 'GET' && method !== 'HEAD')) {
+      requestBody = options.body;
+      if (typeof options.body === 'object' && !('forEach' in options.body) && !(options.body instanceof FormData)) {
+         requestBody = JSON.stringify(options.body);
+      }
+    }
+
+    const res = await fetch(fullUrl, {
       ...options,
+      method: method,
       headers: {
-        "Content-Type": "application/json",
+        ...(requestBody && typeof requestBody === 'string' ? { "Content-Type": "application/json" } : {}),
         ...(currentToken ? { Authorization: `Bearer ${currentToken}` } : {}),
         ...(options.headers || {}),
       },
+      body: requestBody,
     });
 
     if (!res.ok) {

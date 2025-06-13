@@ -26,6 +26,7 @@ import { Movement } from '@/shared/types/movement';
 import { useListInventory } from '@/api/hooks/inventory/useListInventory';
 import { useListMovements } from '@/api/hooks/movement/useListMovements';
 import { InventoryItem } from '@/shared/types/inventory';
+import { MovementType } from '@/shared/enum/movement-type.enum';
 
 export function Movements() {
   const [isEntryDialogOpen, setIsEntryDialogOpen] = useState(false);
@@ -41,6 +42,10 @@ export function Movements() {
     return product?.name || 'Producto no encontrado';
   };
 
+  const getMovementType = (type: MovementType) => {
+    return type === MovementType.ENTRY ? 'Entrada' : type === MovementType.EXIT ? 'Salida' : type === MovementType.SALE ? 'Venta' : type === MovementType.EXPIRATION ? 'Vencimiento' : type;
+  };
+  
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -137,7 +142,7 @@ export function Movements() {
           <TableBody>
             {movements?.data?.map((movement: Movement) => (
               <TableRow key={movement.id}>
-                <TableCell>{movement.type}</TableCell>
+                <TableCell>{getMovementType(movement.type)}</TableCell>
                 <TableCell>{getProductName(movement.itemId)}</TableCell>
                 <TableCell>{movement.batchCode}</TableCell>
                 <TableCell>{movement.quantity}</TableCell>
