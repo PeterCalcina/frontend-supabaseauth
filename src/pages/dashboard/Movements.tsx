@@ -122,9 +122,11 @@ export function Movements() {
                 <TableCell>{movement.quantity}</TableCell>
                 <TableCell>Bs.{movement.unitCost.toFixed(2)}</TableCell>
                 <TableCell>
-                  {format(new Date(movement.expirationDate), 'PPP', {
-                    locale: es,
-                  })}
+                  {
+                    movement.expirationDate ? format(new Date(movement.expirationDate), 'PPP', {
+                      locale: es,
+                    }) : 'Sin fecha de expiración'
+                  }
                 </TableCell>
                 <TableCell>{movement.description}</TableCell>
               </TableRow>

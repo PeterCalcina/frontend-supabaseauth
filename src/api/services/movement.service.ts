@@ -1,7 +1,7 @@
 import { Movement } from '@/shared/types/movement';
 import { useAuthFetcher } from '../client/fetcher';
 import { API_ENDPOINTS_MOVEMENT } from '../endpoints';
-import { EntryMovementDto, SaleMovementDto } from '@/shared/schemas/movement.schema';
+import { EntryMovementDto, ExpirationMovementDto, SaleMovementDto } from '@/shared/schemas/movement.schema';
 
 
 export const movementService = () => {
@@ -10,6 +10,11 @@ export const movementService = () => {
   return {
     list: async () => {
       const { data } = await fetcher<Movement[]>(API_ENDPOINTS_MOVEMENT.list);
+      return { data };
+    },
+
+    listEntries: async () => {
+      const { data } = await fetcher<Movement[]>(API_ENDPOINTS_MOVEMENT.listEntries);
       return { data };
     },
 
@@ -27,7 +32,7 @@ export const movementService = () => {
         body: JSON.stringify(data),
       }),
 
-    createExpiration: (data: Omit<Movement, 'id' | 'createdAt' | 'updatedAt'>) =>
+    createExpiration: (data: ExpirationMovementDto) =>
       fetcher<Movement>(API_ENDPOINTS_MOVEMENT.createExpiration, {
         method: 'POST',
         body: JSON.stringify(data),

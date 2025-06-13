@@ -8,13 +8,14 @@ export const API_ENDPOINTS_INVENTORY = {
     list: `${INVENTORY_URL}`,
     create: `${INVENTORY_URL}`,
     get: (id: number) => `${INVENTORY_URL}/${id}`,
-    update: (id: string) => `${INVENTORY_URL}/${id}`,
-    delete: (id: string) => `${INVENTORY_URL}/${id}`,
+    update: (id: number) => `${INVENTORY_URL}/${id}`,
+    delete: (id: number) => `${INVENTORY_URL}/${id}`,
   },
 };
 
 export const API_ENDPOINTS_MOVEMENT = {
   list: `${MOVEMENT_URL}`,
+  listEntries: `${MOVEMENT_URL}/entries`,
   get: (id: number) => `${MOVEMENT_URL}/${id}`,
   createEntry: `${MOVEMENT_URL}`,
   createSale: `${MOVEMENT_URL}`,

@@ -21,13 +21,13 @@ export const inventoryService = () => {
         body: JSON.stringify(data),
       }),
 
-    update: (id: string, data: UpdateInventoryDto) =>
+    update: (id: number, data: UpdateInventoryDto) =>
       fetcher<InventoryItem>(API_ENDPOINTS_INVENTORY.inventory.update(id), {
         method: 'PATCH',
         body: JSON.stringify(data),
       }),
 
-    delete: (id: string) =>
+    delete: (id: number) =>
       fetcher<void>(API_ENDPOINTS_INVENTORY.inventory.delete(id), {
         method: 'DELETE',
       }),

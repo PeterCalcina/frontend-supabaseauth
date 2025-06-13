@@ -20,3 +20,5 @@ export const saleMovementSchema = BaseMovementSchema.omit({
 });
 export type SaleMovementDto = z.infer<typeof saleMovementSchema>;
 
+export const expirationMovementSchema = z.object(BaseMovementSchema.shape);
+export type ExpirationMovementDto = z.infer<typeof expirationMovementSchema>;

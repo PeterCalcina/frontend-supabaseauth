@@ -8,7 +8,7 @@ export const useDeleteInventory = () => {
   const { addToast } = useToastStore();
 
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: number) => {
       const { message } = await deleteInventory(id);
       return { message };
     },
