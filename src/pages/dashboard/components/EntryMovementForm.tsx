@@ -22,9 +22,10 @@ import { InventoryItem } from "@/shared/types/inventory";
 import { useCreateEntryMovement } from "@/api/hooks/movement/useCreateEntryMovement";
 import { entryMovementSchema, EntryMovementDto } from "@/shared/schemas/movement.schema";
 import { Loader } from "@/shared/components/ui/loader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MovementType } from "@/shared/enum/movement-type.enum";
 import { useGetInventory } from "@/api/hooks/inventory/useGetInventory";
+import { Checkbox } from "@/shared/components/ui/checkbox";
 
 interface EntryMovementFormProps {
   products: InventoryItem[];
@@ -32,15 +33,15 @@ interface EntryMovementFormProps {
 }
 
 export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProps) {
+  const [hasExpirationDate, setHasExpirationDate] = useState(true);
   const form = useForm<EntryMovementDto>({
     resolver: zodResolver(entryMovementSchema),
     defaultValues: {
       type: MovementType.ENTRY,
-      name: "",
       batchCode: "",
       quantity: 1,
       unitCost: 0,
-      expirationDate: new Date(),
+      expirationDate: undefined,
       itemId: 0,
       description: "",
     },
@@ -63,7 +64,11 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
   }, [form.watch("quantity"), form.watch("itemId")]);
 
   const onSubmit = async (values: EntryMovementDto) => {
-    await createEntryMovement.mutateAsync(values);
+    const data = {
+      ...values,
+      expirationDate: hasExpirationDate ? values.expirationDate : undefined,
+    };
+    await createEntryMovement.mutateAsync(data);
     onSuccess();
   };
 
@@ -90,20 +95,6 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre del Lote</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -162,24 +153,49 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="expirationDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Expiración</FormLabel>
-              <FormControl>
-                <Input
-                  type="date"
-                  {...field}
-                  value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                  onChange={(e) => field.onChange(new Date(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="hasExpirationDate"
+              checked={hasExpirationDate}
+              onCheckedChange={(checked: boolean) => {
+                setHasExpirationDate(checked);
+                if (!checked) {
+                  form.setValue("expirationDate", undefined);
+                } else {
+                  form.setValue("expirationDate", new Date());
+                }
+              }}
+            />
+            <label
+              htmlFor="hasExpirationDate"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Tiene fecha de expiración
+            </label>
+          </div>
+
+          {hasExpirationDate && (
+            <FormField
+              control={form.control}
+              name="expirationDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fecha de Expiración</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      {...field}
+                      value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
+        </div>
 
         <FormField
           control={form.control}

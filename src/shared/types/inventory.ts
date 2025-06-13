@@ -1,7 +1,7 @@
 import { Status } from "../enum/status.enum";
 
 export interface InventoryItem {
-  id: string;
+  id: number;
   name: string;
   sku: string;
   qty: number;
