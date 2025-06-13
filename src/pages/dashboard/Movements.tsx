@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, ShoppingCart } from 'lucide-react';
+import { Plus, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import {
   Table,
@@ -21,6 +21,7 @@ import {
 } from '@/shared/components/ui/dialog';
 import { EntryMovementForm } from './components/EntryMovementForm';
 import { SaleMovementForm } from './components/SaleMovementForm';
+import { ExitMovementForm } from './components/ExitMovementForm';
 import { Movement } from '@/shared/types/movement';
 import { useListInventory } from '@/api/hooks/inventory/useListInventory';
 import { useListMovements } from '@/api/hooks/movement/useListMovements';
@@ -29,6 +30,7 @@ import { InventoryItem } from '@/shared/types/inventory';
 export function Movements() {
   const [isEntryDialogOpen, setIsEntryDialogOpen] = useState(false);
   const [isSaleDialogOpen, setIsSaleDialogOpen] = useState(false);
+  const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const { data: movements, isLoading: isLoadingMovements } = useListMovements();
 
@@ -73,6 +75,25 @@ export function Movements() {
                 products={products?.data || []}
                 onSuccess={() => {
                   setIsEntryDialogOpen(false);
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isExitDialogOpen} onOpenChange={setIsExitDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="secondary">
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Salida de producto
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Nuevo Movimiento de Salida</DialogTitle>
+              </DialogHeader>
+              <ExitMovementForm
+                onSuccess={() => {
+                  setIsExitDialogOpen(false);
                 }}
               />
             </DialogContent>

@@ -17,10 +17,10 @@ import { MovementType } from "@/shared/enum/movement-type.enum";
 import { InventoryItem } from "@/shared/types/inventory";
 import { useCreateExpirationMovement } from "@/api/hooks/movement/useCreateExpirationMovement";
 import { useListInventory } from "@/api/hooks/inventory/useListInventory";
-import { useListEntriesMovements } from "@/api/hooks/movement/useListEntriesMovements";
+import { useListEntriesByExpirationDateMovements } from "@/api/hooks/movement/useListEntriesExpirationMovements";
 
 export function Expirations() {
-  const { data: movements, isLoading: isLoadingMovements } = useListEntriesMovements();
+  const { data: movements, isLoading: isLoadingMovements } = useListEntriesByExpirationDateMovements();
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const createExpirationMovement = useCreateExpirationMovement();
 

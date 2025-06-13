@@ -50,8 +50,6 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
     const quantity = form.watch("quantity");
     const product = inventory?.data;
 
-    console.log(product);
-
     if (quantity && product) {
       const constoFinal = calculateFinalCost(product);
       const total = quantity * constoFinal;

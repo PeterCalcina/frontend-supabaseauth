@@ -20,5 +20,23 @@ export const saleMovementSchema = BaseMovementSchema.omit({
 });
 export type SaleMovementDto = z.infer<typeof saleMovementSchema>;
 
-export const expirationMovementSchema = z.object(BaseMovementSchema.shape);
+export const exitMovementSchema = BaseMovementSchema.omit({
+  expirationDate: true,
+}).extend({
+  quantity: z.number().min(1, "La cantidad es requerida"),
+  remainingQuantity: z.number().min(0),
+}).superRefine((data, ctx) => {
+  if (data.quantity > data.remainingQuantity) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "La cantidad no puede ser mayor a la cantidad disponible",
+      path: ["quantity"],
+    });
+  }
+});
+export type ExitMovementDto = z.infer<typeof exitMovementSchema>;
+
+export const expirationMovementSchema = BaseMovementSchema.omit({
+  unitCost: true,
+});
 export type ExpirationMovementDto = z.infer<typeof expirationMovementSchema>;

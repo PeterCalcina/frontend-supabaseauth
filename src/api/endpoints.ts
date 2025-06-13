@@ -15,6 +15,7 @@ export const API_ENDPOINTS_INVENTORY = {
 
 export const API_ENDPOINTS_MOVEMENT = {
   list: `${MOVEMENT_URL}`,
+  listEntriesByExpirationDate: `${MOVEMENT_URL}/entries-by-expiration-date`,
   listEntries: `${MOVEMENT_URL}/entries`,
   get: (id: number) => `${MOVEMENT_URL}/${id}`,
   createEntry: `${MOVEMENT_URL}`,
