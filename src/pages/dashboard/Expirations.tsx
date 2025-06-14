@@ -18,7 +18,7 @@ export function Expirations() {
     useListEntriesByExpirationDateMovements();
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const createExpirationMovement = useCreateExpirationMovement();
-
+  console.log(movements);
   const isLoading = isLoadingMovements || isLoadingProducts;
 
   const getProductName = (itemId: number) => {

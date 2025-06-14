@@ -46,9 +46,9 @@ export function LoginPage() {
   };
 
   return (
-    <Card.Root className="w-full max-w-md">
+    <Card.Root className="w-full max-w-md bg-white">
       <Card.Header>
-        <h2 className="text-2xl font-bold text-center">Iniciar Sesión</h2>
+        <h2 className="text-2xl font-bold text-center text-dark-blue">Iniciar Sesión</h2>
       </Card.Header>
       <form onSubmit={handleSubmit}>
         <Card.Content className="space-y-4">
