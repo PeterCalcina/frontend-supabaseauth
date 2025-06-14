@@ -1,25 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Button } from '@/shared/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/shared/components/ui/form';
-import { Input } from '@/shared/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
-import { Textarea } from '@/shared/components/ui/textarea';
-import { Movement } from '@/shared/types/movement';
+import { Button, Form, Input, Select, Textarea } from '@/shared/components/ui';
+import { Movement } from '@/shared/types';
 
 const movementSchema = z.object({
   type: z.enum(['entry', 'exit', 'expiration', 'sale']),
@@ -53,107 +36,107 @@ export function MovementForm({ products, onSubmit }: MovementFormProps) {
   };
 
   return (
-    <Form {...form}>
+    <Form.Root {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
+        <Form.Field
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de Movimiento</FormLabel>
-              <Select
+            <Form.Item>
+              <Form.Label>Tipo de Movimiento</Form.Label>
+              <Select.Root
                 onValueChange={field.onChange}
                 defaultValue={field.value}
               >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el tipo" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="entry">Entrada</SelectItem>
-                  <SelectItem value="exit">Salida</SelectItem>
-                  <SelectItem value="expiration">Vencimiento</SelectItem>
-                  <SelectItem value="sale">Venta</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+                <Form.Control>
+                  <Select.Trigger>
+                    <Select.Value placeholder="Selecciona el tipo" />
+                  </Select.Trigger>
+                </Form.Control>
+                  <Select.Content>
+                  <Select.Item value="entry">Entrada</Select.Item>
+                  <Select.Item value="exit">Salida</Select.Item>
+                  <Select.Item value="expiration">Vencimiento</Select.Item>
+                  <Select.Item value="sale">Venta</Select.Item>
+                </Select.Content>
+              </Select.Root>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="product_id"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Producto</FormLabel>
-              <Select
+            <Form.Item>
+              <Form.Label>Producto</Form.Label>
+              <Select.Root
                 onValueChange={field.onChange}
                 defaultValue={field.value}
               >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el producto" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
+                <Form.Control>
+                  <Select.Trigger>
+                    <Select.Value placeholder="Selecciona el producto" />
+                  </Select.Trigger>
+                </Form.Control>
+                <Select.Content>
                   {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id}>
+                    <Select.Item key={product.id} value={product.id}>
                       {product.itemId}
-                    </SelectItem>
+                    </Select.Item>
                   ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+                  </Select.Content>
+              </Select.Root>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="quantity"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cantidad</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control>
                 <Input
                   type="number"
                   min="1"
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="date"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Fecha</Form.Label>
+              <Form.Control>
                 <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="notes"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Notas</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Notas</Form.Label>
+              <Form.Control>
                 <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+                </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -161,6 +144,6 @@ export function MovementForm({ products, onSubmit }: MovementFormProps) {
           Registrar Movimiento
         </Button>
       </form>
-    </Form>
+    </Form.Root>
   );
 } 

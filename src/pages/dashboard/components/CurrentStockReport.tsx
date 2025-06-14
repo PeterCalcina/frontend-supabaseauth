@@ -1,19 +1,7 @@
 import { useState } from 'react';
 import { useCurrentStockReport } from '@/api/hooks/report/useReports';
 import { GetCurrentStockDto } from '@/shared/schemas/report.schema';
-import { Card } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Button } from '@/shared/components/ui/button';
-import { Loader } from '@/shared/components/ui/loader';
-import { Skeleton } from '@/shared/components/ui/skeleton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/components/ui/table';
+import { Card, Input, Button, Loader, Skeleton, Table } from '@/shared/components/ui';
 
 export function CurrentStockReport() {
   const [filters, setFilters] = useState<GetCurrentStockDto>({
@@ -86,34 +74,34 @@ export function CurrentStockReport() {
           </div>
         ) : (
           <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Cantidad Total</TableHead>
-                  <TableHead>Costo Promedio (Bs.)</TableHead>
-                  <TableHead>Valor Total (Bs.)</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <Table.Root>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Nombre</Table.Head>
+                  <Table.Head>Cantidad Total</Table.Head>
+                  <Table.Head>Costo Promedio (Bs.)</Table.Head>
+                  <Table.Head>Valor Total (Bs.)</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {reportData.length > 0 ? ( // Verifica si hay datos antes de mapear
                   reportData.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.totalQuantity}</TableCell>
-                      <TableCell>{item.unitCost.toFixed(2)}</TableCell>
-                      <TableCell>{item.currentTotalValue.toFixed(2)}</TableCell>
-                    </TableRow>
+                    <Table.Row key={item.id}>
+                      <Table.Cell>{item.name}</Table.Cell>
+                      <Table.Cell>{item.totalQuantity}</Table.Cell>
+                      <Table.Cell>{item.unitCost.toFixed(2)}</Table.Cell>
+                      <Table.Cell>{item.currentTotalValue.toFixed(2)}</Table.Cell>
+                    </Table.Row>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-4">
+                  <Table.Row>
+                    <Table.Cell colSpan={5} className="text-center text-muted-foreground py-4">
                       No se encontraron resultados.
-                    </TableCell>
-                  </TableRow>
+                    </Table.Cell>
+                  </Table.Row>
                 )}
-              </TableBody>
-            </Table>
+              </Table.Body>
+            </Table.Root>
 
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">

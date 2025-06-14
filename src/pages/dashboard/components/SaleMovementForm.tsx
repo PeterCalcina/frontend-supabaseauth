@@ -1,29 +1,12 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/shared/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
+import { Button, Form, Input, Loader, Select } from "@/shared/components/ui";
 import { InventoryItem } from "@/shared/types/inventory";
 import { saleMovementSchema, SaleMovementDto } from "@/shared/schemas/movement.schema";
-import { Loader } from "@/shared/components/ui/loader";
 import { MovementType } from "@/shared/enum/movement-type.enum";
-import { useGetInventory } from "@/api/hooks/inventory/useGetInventory";
-import { useCreateSaleMovement } from "@/api/hooks/movement/useCreateSaleMovement";
+import { useGetInventory } from "@/api/hooks/inventory";
+import { useCreateSaleMovement } from "@/api/hooks/movement";
 
 interface SaleMovementFormProps {
   products: InventoryItem[];
@@ -72,30 +55,30 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
   };
 
   return (
-    <Form {...form}>
+    <Form.Root {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+        <Form.Field
           control={form.control}
           name="itemId"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Producto</FormLabel>
-              <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value.toString()}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el producto" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="bg-background">
+            <Form.Item>
+              <Form.Label>Producto</Form.Label>
+              <Select.Root onValueChange={(value) => field.onChange(Number(value))} value={field.value.toString()}>
+                <Form.Control>
+                  <Select.Trigger>
+                    <Select.Value placeholder="Selecciona el producto" />
+                  </Select.Trigger>
+                </Form.Control>
+                <Select.Content className="bg-background">
                   {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id.toString()}>
+                    <Select.Item key={product.id} value={product.id.toString()}>
                       {product.name}
-                    </SelectItem>
+                    </Select.Item>
                   ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+                </Select.Content>
+              </Select.Root>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -112,13 +95,13 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
           </div>
         )}
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="quantity"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cantidad</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control>
                 <Input
                   type="number"
                   min="1"
@@ -126,23 +109,23 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Detalle de la venta</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Detalle de la venta</Form.Label>
+              <Form.Control>
                 <Input {...field} readOnly />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -154,6 +137,6 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
           )}
         </Button>
       </form>
-    </Form>
+    </Form.Root>
   );
 } 

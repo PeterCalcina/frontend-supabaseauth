@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { Card } from "@/shared/components/ui/card";
-import { Button } from "@/shared/components/ui/button";
-import { CurrentStockReport } from "@/pages/dashboard/components/CurrentStockReport";
-import { MovementHistoryReport } from "@/pages/dashboard/components/MovementHistoryReport";
-import { ExpiringStockReport } from "@/pages/dashboard/components/ExpiringStockReport";
+import { Card, Button } from "@/shared/components/ui";
+import { CurrentStockReport, MovementHistoryReport, ExpiringStockReport } from "./components";
 
 type ReportTab = "current-stock" | "movement-history" | "expiring-stock";
 

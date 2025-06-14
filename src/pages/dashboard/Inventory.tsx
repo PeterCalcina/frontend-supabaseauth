@@ -2,34 +2,17 @@ import { useState } from "react";
 import { format, isValid } from "date-fns";
 import { es } from "date-fns/locale";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/components/ui/table";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogDescription,
-  DialogFooter,
-} from "@/shared/components/ui/dialog";
-import { ProductForm } from "./components/ProductForm";
-import { InventoryItem } from "@/shared/types/inventory";
-import { useListInventory } from "@/api/hooks/inventory/useListInventory";
-import { useDeleteInventory } from "@/api/hooks/inventory/useDeleteInventory";
+import { Button, Table, Skeleton, Dialog } from "@/shared/components/ui";
+import { ProductForm } from "./components";
+import { InventoryItem } from "@/shared/types";
+import { useListInventory, useDeleteInventory } from "@/api/hooks/inventory";
 
 export function Inventory() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<InventoryItem | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<InventoryItem | null>(
+    null
+  );
   const { data: products, isLoading } = useListInventory();
   const deleteInventory = useDeleteInventory();
 
@@ -74,58 +57,58 @@ export function Inventory() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Inventario</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
+        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog.Trigger asChild>
             <Button onClick={handleCreate}>
               <Plus className="mr-2 h-4 w-4" />
               Nuevo Producto
             </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>
                 {selectedProduct ? "Editar Producto" : "Nuevo Producto"}
-              </DialogTitle>
-            </DialogHeader>
+              </Dialog.Title>
+            </Dialog.Header>
             <ProductForm
               product={selectedProduct}
               onSuccess={() => {
                 setIsDialogOpen(false);
               }}
             />
-          </DialogContent>
-        </Dialog>
+          </Dialog.Content>
+        </Dialog.Root>
       </div>
 
       <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>SKU</TableHead>
-              <TableHead>Cantidad</TableHead>
-              <TableHead>Costo</TableHead>
-              <TableHead>Margen de Ganancia</TableHead>
-              <TableHead>Última Entrada</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+        <Table.Root>
+          <Table.Header>
+            <Table.Row>
+              <Table.Head>Nombre</Table.Head>
+              <Table.Head>SKU</Table.Head>
+              <Table.Head>Cantidad</Table.Head>
+              <Table.Head>Costo</Table.Head>
+              <Table.Head>Margen de Ganancia</Table.Head>
+              <Table.Head>Última Entrada</Table.Head>
+              <Table.Head className="text-right">Acciones</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {products?.data?.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.sku}</TableCell>
-                <TableCell>{product.qty}</TableCell>
-                <TableCell>Bs.{product.cost.toFixed(2)}</TableCell>
-                <TableCell>{product.profitMargin.toFixed(2)}%</TableCell>
-                <TableCell>
+              <Table.Row key={product.id}>
+                <Table.Cell>{product.name}</Table.Cell>
+                <Table.Cell>{product.sku}</Table.Cell>
+                <Table.Cell>{product.qty}</Table.Cell>
+                <Table.Cell>Bs.{product.cost.toFixed(2)}</Table.Cell>
+                <Table.Cell>{product.profitMargin.toFixed(2)}%</Table.Cell>
+                <Table.Cell>
                   {product.lastEntry && isValid(new Date(product.lastEntry))
                     ? format(new Date(product.lastEntry), "PPP", {
                         locale: es,
                       })
                     : "Sin fecha"}
-                </TableCell>
-                <TableCell className="text-right">
+                </Table.Cell>
+                <Table.Cell className="text-right">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -140,22 +123,26 @@ export function Inventory() {
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </TableBody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       </div>
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>¿Eliminar producto?</DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que deseas eliminar el producto {selectedProduct?.name}? Esta acción no se puede deshacer.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+      <Dialog.Root
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>¿Eliminar producto?</Dialog.Title>
+            <Dialog.Description>
+              ¿Estás seguro de que deseas eliminar el producto{" "}
+              {selectedProduct?.name}? Esta acción no se puede deshacer.
+            </Dialog.Description>
+          </Dialog.Header>
+          <Dialog.Footer>
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
@@ -169,9 +156,9 @@ export function Inventory() {
             >
               {deleteInventory.isPending ? "Eliminando..." : "Eliminar"}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
     </div>
   );
 }

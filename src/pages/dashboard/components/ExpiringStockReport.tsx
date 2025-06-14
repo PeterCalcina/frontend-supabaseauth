@@ -1,27 +1,7 @@
 import { useState } from 'react';
 import { useExpiringStockReport } from '@/api/hooks/report/useReports';
 import { GetExpiringStockDto } from '@/shared/schemas/report.schema';
-import { Card } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Button } from '@/shared/components/ui/button';
-import { Loader } from '@/shared/components/ui/loader';
-import { Skeleton } from '@/shared/components/ui/skeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/components/ui/table';
-import { Badge } from '@/shared/components/ui/badge';
+import { Card, Input, Button, Loader, Skeleton, Select, Table, Badge } from '@/shared/components/ui';
 import { format } from 'date-fns';
 
 export function ExpiringStockReport() {
@@ -33,6 +13,7 @@ export function ExpiringStockReport() {
   });
 
   const { data, isLoading, isFetching, isError } = useExpiringStockReport(filters);
+  const currentPage: number = data?.page ?? filters.page ?? 1;
 
   const handleStatusChange = (value: string) => {
     setFilters(prev => ({
@@ -92,18 +73,18 @@ export function ExpiringStockReport() {
 
       <Card.Content>
         <div className="flex flex-wrap gap-4 mb-6">
-          <Select
+          <Select.Root
             value={filters.status}
             onValueChange={handleStatusChange}
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="expired">Vencidos</SelectItem>
-              <SelectItem value="expiring-soon">Por Vencer</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select.Trigger className="w-[180px]">
+              <Select.Value placeholder="Estado" />
+            </Select.Trigger>
+            <Select.Content>
+              <Select.Item value="expired">Vencidos</Select.Item>
+              <Select.Item value="expiring-soon">Por Vencer</Select.Item>
+            </Select.Content>
+          </Select.Root>
 
           <Input
             type="number"
@@ -122,45 +103,45 @@ export function ExpiringStockReport() {
           </div>
         ) : (
           <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID Producto</TableHead>
-                  <TableHead>Nombre de Producto</TableHead>
-                  <TableHead>Lote</TableHead>
-                  <TableHead>Cantidad Restante</TableHead>
-                  <TableHead>Fecha de Vencimiento</TableHead>
-                  <TableHead>Días para Vencer</TableHead>
-                  <TableHead>Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <Table.Root>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>ID Producto</Table.Head>
+                  <Table.Head>Nombre de Producto</Table.Head>
+                  <Table.Head>Lote</Table.Head>
+                  <Table.Head>Cantidad Restante</Table.Head>
+                  <Table.Head>Fecha de Vencimiento</Table.Head>
+                  <Table.Head>Días para Vencer</Table.Head>
+                  <Table.Head>Estado</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {data?.data?.map((item) => {
                   const daysUntilExpiration = calculateDaysUntilExpiration(item.expirationDate);
                   const isExpired = daysUntilExpiration < 0;
 
                   return (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.productId}</TableCell>
-                      <TableCell>{item.productName}</TableCell>
-                      <TableCell>{item.batchCode}</TableCell>
-                      <TableCell>{item.remainingQuantity}</TableCell>
-                      <TableCell>{format(item.expirationDate, 'dd/MM/yyyy')}</TableCell>
-                      <TableCell>{
+                    <Table.Row key={item.id}>
+                      <Table.Cell>{item.productId}</Table.Cell>
+                      <Table.Cell>{item.productName}</Table.Cell>
+                      <Table.Cell>{item.batchCode}</Table.Cell>
+                      <Table.Cell>{item.remainingQuantity}</Table.Cell>
+                      <Table.Cell>{format(item.expirationDate, 'dd/MM/yyyy')}</Table.Cell>
+                      <Table.Cell>{
                         isExpired ? 'Vencido' : Math.abs(daysUntilExpiration)
-                        }</TableCell>
-                      <TableCell>
+                        }</Table.Cell>
+                      <Table.Cell>
                         <Badge
                           variant={isExpired ? "destructive" : "warning"}
                         >
                           {isExpired ? "Vencido" : "Por Vencer"}
                         </Badge>
-                      </TableCell>
-                    </TableRow>
+                      </Table.Cell>
+                    </Table.Row>
                   );
                 })}
-              </TableBody>
-            </Table>
+              </Table.Body>
+            </Table.Root>
 
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
@@ -169,15 +150,15 @@ export function ExpiringStockReport() {
               <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => handlePageChange(filters.page! - 1)}
-                  disabled={filters.page! === 1}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
                 >
                   Anterior
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => handlePageChange(filters.page! + 1)} 
-                  disabled={filters.page! >= (data?.totalPages! || 1)}
+                  onClick={() => handlePageChange(currentPage + 1)} 
+                  disabled={currentPage >= (data?.totalPages || 1)}
                 >
                   Siguiente
                 </Button>

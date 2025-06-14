@@ -9,7 +9,7 @@ export const useUpdateInventory = () => {
   const { update: updateInventory } = inventoryService();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateInventoryDto }) =>
+    mutationFn: async ({ id, data }: { id: number; data: UpdateInventoryDto }) =>
       await updateInventory(id, data),
 
     onSuccess: ({ message }) => {

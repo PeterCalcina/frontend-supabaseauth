@@ -1,26 +1,21 @@
-import { format, differenceInDays, startOfDay, isBefore, isAfter } from "date-fns";
+import {
+  format,
+  differenceInDays,
+  startOfDay,
+  isBefore,
+  isAfter,
+} from "date-fns";
 import { es } from "date-fns/locale";
 import { Trash2 } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/components/ui/table";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import { Badge } from "@/shared/components/ui/badge";
-import { Movement } from "@/shared/types/movement";
+import { Button, Table, Skeleton, Badge } from "@/shared/components/ui";
+import { Movement, InventoryItem } from "@/shared/types";
 import { MovementType } from "@/shared/enum/movement-type.enum";
-import { InventoryItem } from "@/shared/types/inventory";
-import { useCreateExpirationMovement } from "@/api/hooks/movement/useCreateExpirationMovement";
-import { useListInventory } from "@/api/hooks/inventory/useListInventory";
-import { useListEntriesByExpirationDateMovements } from "@/api/hooks/movement/useListEntriesExpirationMovements";
+import { useCreateExpirationMovement, useListEntriesByExpirationDateMovements } from "@/api/hooks/movement";
+import { useListInventory } from "@/api/hooks/inventory";
 
 export function Expirations() {
-  const { data: movements, isLoading: isLoadingMovements } = useListEntriesByExpirationDateMovements();
+  const { data: movements, isLoading: isLoadingMovements } =
+    useListEntriesByExpirationDateMovements();
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const createExpirationMovement = useCreateExpirationMovement();
 
@@ -47,16 +42,16 @@ export function Expirations() {
   const todayStart = startOfDay(new Date());
   const DAYS_THRESHOLD = 10;
 
-  const expiredProducts = movements?.data?.filter(
-    (movement: Movement) =>
-      isBefore(new Date(movement.expirationDate), todayStart)
+  const expiredProducts = movements?.data?.filter((movement: Movement) =>
+    isBefore(new Date(movement.expirationDate), todayStart)
   );
 
   const soonToExpireProducts = movements?.data?.filter(
     (movement: Movement) =>
       isAfter(new Date(movement.expirationDate), todayStart) &&
-      differenceInDays(new Date(movement.expirationDate), todayStart) <= DAYS_THRESHOLD
-    );
+      differenceInDays(new Date(movement.expirationDate), todayStart) <=
+        DAYS_THRESHOLD
+  );
 
   if (isLoading) {
     return (
@@ -76,32 +71,32 @@ export function Expirations() {
       <div>
         <h2 className="text-2xl font-bold mb-4">Productos Vencidos</h2>
         <div className="border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Producto</TableHead>
-                <TableHead>Lote</TableHead>
-                <TableHead>Cantidad Restante</TableHead>
-                <TableHead>Fecha de Expiración</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <Table.Root>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Producto</Table.Head>
+                <Table.Head>Lote</Table.Head>
+                <Table.Head>Cantidad Restante</Table.Head>
+                <Table.Head>Fecha de Expiración</Table.Head>
+                <Table.Head>Estado</Table.Head>
+                <Table.Head>Acciones</Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {expiredProducts?.map((movement: Movement) => (
-                <TableRow key={movement.id}>
-                  <TableCell>{getProductName(movement.itemId)}</TableCell>
-                  <TableCell>{movement.batchCode}</TableCell>
-                  <TableCell>{movement.remainingQuantity}</TableCell>
-                  <TableCell>
+                <Table.Row key={movement.id}>
+                  <Table.Cell>{getProductName(movement.itemId)}</Table.Cell>
+                  <Table.Cell>{movement.batchCode}</Table.Cell>
+                  <Table.Cell>{movement.remainingQuantity}</Table.Cell>
+                  <Table.Cell>
                     {format(new Date(movement.expirationDate), "PPP", {
                       locale: es,
                     })}
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     <Badge variant="destructive">Vencido</Badge>
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -110,46 +105,46 @@ export function Expirations() {
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ))}
               {expiredProducts?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center">
+                <Table.Row>
+                  <Table.Cell colSpan={6} className="text-center">
                     No hay productos vencidos
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               )}
-            </TableBody>
-          </Table>
+            </Table.Body>
+          </Table.Root>
         </div>
       </div>
 
       <div>
         <h2 className="text-2xl font-bold mb-4">Productos por Vencer</h2>
         <div className="border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Producto</TableHead>
-                <TableHead>Lote</TableHead>
-                <TableHead>Cantidad Restante</TableHead>
-                <TableHead>Fecha de Expiración</TableHead>
-                <TableHead>Estado</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <Table.Root>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Producto</Table.Head>
+                <Table.Head>Lote</Table.Head>
+                <Table.Head>Cantidad Restante</Table.Head>
+                <Table.Head>Fecha de Expiración</Table.Head>
+                <Table.Head>Estado</Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {soonToExpireProducts?.map((movement: Movement) => (
-                <TableRow key={movement.id}>
-                  <TableCell>{getProductName(movement.itemId)}</TableCell>
-                  <TableCell>{movement.batchCode}</TableCell>
-                  <TableCell>{movement.remainingQuantity}</TableCell>
-                  <TableCell>
+                  <Table.Row key={movement.id}>
+                  <Table.Cell>{getProductName(movement.itemId)}</Table.Cell>
+                  <Table.Cell>{movement.batchCode}</Table.Cell>
+                  <Table.Cell>{movement.remainingQuantity}</Table.Cell>
+                  <Table.Cell>
                     {format(new Date(movement.expirationDate), "PPP", {
                       locale: es,
                     })}
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     <Badge variant="warning">
                       {differenceInDays(
                         new Date(movement.expirationDate),
@@ -157,18 +152,18 @@ export function Expirations() {
                       )}{" "}
                       días para vencer
                     </Badge>
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ))}
               {soonToExpireProducts?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
+                <Table.Row>
+                  <Table.Cell colSpan={5} className="text-center">
                     No hay productos próximos a vencer
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               )}
-            </TableBody>
-          </Table>
+            </Table.Body>
+          </Table.Root>
         </div>
       </div>
     </div>

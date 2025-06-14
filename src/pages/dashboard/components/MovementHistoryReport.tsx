@@ -2,27 +2,7 @@ import { useState } from 'react';
 import { useMovementHistoryReport } from '@/api/hooks/report/useReports';
 import { GetMovementHistoryDto } from '@/shared/schemas/report.schema';
 import { MovementType } from '@/shared/enum/movement-type.enum';
-import { Card } from '@/shared/components/ui/card';
-import { Input } from '@/shared/components/ui/input';
-import { Button } from '@/shared/components/ui/button';
-import { Loader } from '@/shared/components/ui/loader';
-import { Skeleton } from '@/shared/components/ui/skeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/components/ui/table';
-
+import { Card, Input, Button, Loader, Skeleton, Select, Table } from '@/shared/components/ui';
 import { format, isValid, subDays, addDays } from 'date-fns';
 
 export function MovementHistoryReport() {
@@ -43,7 +23,7 @@ export function MovementHistoryReport() {
 
   const movementHistoryData = data?.data || [];
   const totalItems = data?.total || 0;
-  const currentPage = data?.page || filters.page;
+  const currentPage: number = data?.page ?? filters.page ?? 1;
   const totalPages = data?.totalPages || 1;
 
   const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
@@ -126,22 +106,22 @@ export function MovementHistoryReport() {
             />
           </div>
 
-          <Select
+          <Select.Root
             value={filters.movementType || 'ALL_TYPES_OPTION'}
             onValueChange={handleMovementTypeChange}
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Tipo de movimiento" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL_TYPES_OPTION">Todos</SelectItem>
+            <Select.Trigger className="w-[180px]">
+              <Select.Value placeholder="Tipo de movimiento" />
+            </Select.Trigger>
+            <Select.Content>
+              <Select.Item value="ALL_TYPES_OPTION">Todos</Select.Item>
               {Object.values(MovementType).map(type => (
-                <SelectItem key={type} value={type}>
+                <Select.Item key={type} value={type}>
                   {type === 'ENTRY' ? 'Entrada' : type === 'EXIT' ? 'Salida' : type === 'SALE' ? 'Venta' : type === 'EXPIRATION' ? 'Vencimiento' : type}
-                </SelectItem>
+                </Select.Item>
               ))}
-            </SelectContent>
-          </Select>
+            </Select.Content>
+          </Select.Root>
 
           <Input
             placeholder="Buscar por código de lote..."
@@ -160,48 +140,48 @@ export function MovementHistoryReport() {
           </div>
         ) : (
           <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID Movimiento</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Nombre de Producto</TableHead>
-                  <TableHead>Cantidad</TableHead>
-                  <TableHead>Costo Unitario</TableHead>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Lote</TableHead>
-                  <TableHead>Descripción</TableHead>
-                  <TableHead>F. Vencimiento</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <Table.Root>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>ID Movimiento</Table.Head>
+                  <Table.Head>Tipo</Table.Head>
+                  <Table.Head>Nombre de Producto</Table.Head>
+                  <Table.Head>Cantidad</Table.Head>
+                  <Table.Head>Costo Unitario</Table.Head>
+                  <Table.Head>Fecha</Table.Head>
+                  <Table.Head>Lote</Table.Head>
+                  <Table.Head>Descripción</Table.Head>
+                  <Table.Head>F. Vencimiento</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {movementHistoryData.length > 0 ? (
                   movementHistoryData.map((movement) => (
-                    <TableRow key={movement.id}>
-                      <TableCell>{movement.id}</TableCell>
-                      <TableCell>{movement.type}</TableCell>
-                      <TableCell>{movement.productName || 'N/A'}</TableCell>
-                      <TableCell>{movement.quantity}</TableCell>
-                      <TableCell>{movement.unitCost?.toFixed(2) || 'N/A'}</TableCell>
-                      <TableCell>
+                    <Table.Row key={movement.id}>
+                      <Table.Cell>{movement.id}</Table.Cell>
+                      <Table.Cell>{movement.type}</Table.Cell>
+                      <Table.Cell>{movement.productName || 'N/A'}</Table.Cell>
+                      <Table.Cell>{movement.quantity}</Table.Cell>
+                      <Table.Cell>{movement.unitCost?.toFixed(2) || 'N/A'}</Table.Cell>
+                      <Table.Cell>
                         {movement.date ? format(movement.date, 'dd/MM/yyyy') : 'N/A'}
-                      </TableCell>
-                      <TableCell>{movement.batchCode || 'N/A'}</TableCell>
-                      <TableCell>{movement.description || 'N/A'}</TableCell>
-                      <TableCell>
+                      </Table.Cell>
+                      <Table.Cell>{movement.batchCode || 'N/A'}</Table.Cell>
+                      <Table.Cell>{movement.description || 'N/A'}</Table.Cell>
+                      <Table.Cell>
                         {movement.expirationDate ? format(movement.expirationDate, 'dd/MM/yyyy') : 'Sin fecha'}
-                      </TableCell>
-                    </TableRow>
+                      </Table.Cell>
+                    </Table.Row>
                   ))
                 ) : (
-                  <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground py-4">
+                  <Table.Row>
+                    <Table.Cell colSpan={9} className="text-center text-muted-foreground py-4">
                       No se encontraron resultados.
-                    </TableCell>
-                  </TableRow>
+                    </Table.Cell>
+                  </Table.Row>
                 )}
-              </TableBody>
-            </Table>
+              </Table.Body>
+            </Table.Root>
 
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
@@ -210,15 +190,15 @@ export function MovementHistoryReport() {
               <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => handlePageChange(currentPage! - 1)}
-                  disabled={currentPage! === 1 || isFetching}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage <= 1 || isFetching}
                 >
                   Anterior
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => handlePageChange(currentPage! + 1)}
-                  disabled={currentPage! >= totalPages || isFetching}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage >= totalPages || isFetching}
                 >
                   Siguiente
                 </Button>

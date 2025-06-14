@@ -1,31 +1,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/shared/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
-import { Textarea } from "@/shared/components/ui/textarea";
-import { InventoryItem } from "@/shared/types/inventory";
-import { useCreateEntryMovement } from "@/api/hooks/movement/useCreateEntryMovement";
+import { Button, Form, Input, Select, Textarea, Loader, Checkbox } from "@/shared/components/ui";
+import { InventoryItem } from "@/shared/types";
+import { useCreateEntryMovement } from "@/api/hooks/movement";
 import { entryMovementSchema, EntryMovementDto } from "@/shared/schemas/movement.schema";
-import { Loader } from "@/shared/components/ui/loader";
 import { useEffect, useState } from "react";
 import { MovementType } from "@/shared/enum/movement-type.enum";
-import { useGetInventory } from "@/api/hooks/inventory/useGetInventory";
-import { Checkbox } from "@/shared/components/ui/checkbox";
+import { useGetInventory } from "@/api/hooks/inventory";
 
 interface EntryMovementFormProps {
   products: InventoryItem[];
@@ -73,73 +54,73 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
   };
 
   return (
-    <Form {...form}>
+    <Form.Root {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+        <Form.Field
           control={form.control}
           name="itemId"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Producto</FormLabel>
-              <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value.toString()}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el producto" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="bg-background">
+            <Form.Item>
+              <Form.Label>Producto</Form.Label>
+              <Select.Root onValueChange={(value) => field.onChange(Number(value))} value={field.value.toString()}>
+                <Form.Control>
+                  <Select.Trigger>
+                    <Select.Value placeholder="Selecciona el producto" />
+                  </Select.Trigger>
+                </Form.Control>
+                <Select.Content className="bg-background">
                   {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id.toString()}>
+                    <Select.Item key={product.id} value={product.id.toString()}>
                       {product.name}
-                    </SelectItem>
+                      </Select.Item>
                   ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+                </Select.Content>
+              </Select.Root>
+                <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="batchCode"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código de Lote</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Código de Lote</Form.Label>
+              <Form.Control>
                 <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="quantity"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cantidad</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control>
                 <Input
                   type="number"
                   min="1"
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="unitCost"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Costo Unitario</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Costo Unitario</Form.Label>
+              <Form.Control>
                 <Input
                   type="number"
                   step="0.01"
@@ -147,9 +128,9 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -176,38 +157,38 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
           </div>
 
           {hasExpirationDate && (
-            <FormField
+            <Form.Field
               control={form.control}
               name="expirationDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fecha de Expiración</FormLabel>
-                  <FormControl>
+                  <Form.Item>
+                  <Form.Label>Fecha de Expiración</Form.Label>
+                  <Form.Control>
                     <Input
                       type="date"
                       {...field}
                       value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
                       onChange={(e) => field.onChange(new Date(e.target.value))}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </Form.Control>
+                  <Form.Message />
+                </Form.Item>
               )}
             />
           )}
         </div>
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descripción</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control>
                 <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -219,6 +200,6 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
           )}
         </Button>
       </form>
-    </Form>
+    </Form.Root>
   );
 } 

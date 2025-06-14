@@ -13,7 +13,7 @@ import {
 import { cn } from "@/shared/lib/utils"
 import { Label } from "@/shared/components/ui/label"
 
-const Form = FormProvider
+const FormRoot = FormProvider
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -164,13 +164,13 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = "FormMessage"
 
-export {
-  useFormField,
-  Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
-  FormField,
+export const Form = {
+  Root: FormRoot,
+  Field: FormField,
+  Item: FormItem,
+  Label: FormLabel,
+  Control: FormControl,
+  Description: FormDescription,
+  Message: FormMessage,
+  useField: useFormField,
 } 

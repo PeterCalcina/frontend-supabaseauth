@@ -1,35 +1,15 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/shared/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
-import { Movement } from "@/shared/types/movement";
-import { MovementType } from "@/shared/enum/movement-type.enum";
-import { useCreateExitMovement } from "@/api/hooks/movement/useCreateExitMovement";
-import { Loader } from "@/shared/components/ui/loader";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { useEffect, useState } from "react";
-import {
-  exitMovementSchema,
-  ExitMovementDto,
-} from "@/shared/schemas/movement.schema";
-import { useGetInventory } from "@/api/hooks/inventory/useGetInventory";
-import { useListEntriesMovements } from "@/api/hooks/movement/useListEntriesMovements";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Form, Input, Select, Loader } from "@/shared/components/ui";
+import { Movement } from "@/shared/types/movement";
+import { MovementType } from "@/shared/enum/movement-type.enum";
+import { useCreateExitMovement } from "@/api/hooks/movement";
+import { exitMovementSchema, ExitMovementDto } from "@/shared/schemas/movement.schema";
+import { useGetInventory } from "@/api/hooks/inventory";
+import { useListEntriesMovements } from "@/api/hooks/movement";
 
 interface ExitMovementFormProps {
   onSuccess: () => void;
@@ -95,32 +75,35 @@ export function ExitMovementForm({ onSuccess }: ExitMovementFormProps) {
   };
 
   return (
-    <Form {...form}>
+    <Form.Root {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
+        <Form.Field
           control={form.control}
           name="batchCode"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lote</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el lote" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
+            <Form.Item>
+              <Form.Label>Lote</Form.Label>
+              <Select.Root
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <Form.Control>
+                  <Select.Trigger>
+                    <Select.Value placeholder="Selecciona el lote" />
+                  </Select.Trigger>
+                </Form.Control>
+                <Select.Content>
                   {movements?.data
                     ?.filter((m) => m.remainingQuantity > 0)
                     .map((movement) => (
-                      <SelectItem key={movement.id} value={movement.batchCode}>
+                      <Select.Item key={movement.id} value={movement.batchCode}>
                         {movement.batchCode}
-                      </SelectItem>
+                      </Select.Item>
                     ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+                </Select.Content>
+              </Select.Root>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -149,13 +132,13 @@ export function ExitMovementForm({ onSuccess }: ExitMovementFormProps) {
           </div>
         )}
 
-        <FormField
+        <Form.Field
           control={form.control}
           name="quantity"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cantidad a retirar</FormLabel>
-              <FormControl>
+            <Form.Item>
+              <Form.Label>Cantidad a retirar</Form.Label>
+              <Form.Control>
                 <Input
                   type="number"
                   min="1"
@@ -163,9 +146,9 @@ export function ExitMovementForm({ onSuccess }: ExitMovementFormProps) {
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </Form.Control>
+              <Form.Message />
+            </Form.Item>
           )}
         />
 
@@ -177,6 +160,6 @@ export function ExitMovementForm({ onSuccess }: ExitMovementFormProps) {
           )}
         </Button>
       </form>
-    </Form>
+    </Form.Root>
   );
 }
