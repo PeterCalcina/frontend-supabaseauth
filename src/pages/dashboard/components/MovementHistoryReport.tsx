@@ -23,16 +23,18 @@ import {
   TableRow,
 } from '@/shared/components/ui/table';
 
-import { format, isValid } from 'date-fns';
+import { format, isValid, subDays, addDays } from 'date-fns';
 
 export function MovementHistoryReport() {
   const today = new Date();
+  const oneWeekAgo = subDays(today, 7);
+  const tomorrow = addDays(today, 1);
 
   const [filters, setFilters] = useState<GetMovementHistoryDto>({
-    startDate: today,
-    endDate: today,
+    startDate: oneWeekAgo,
+    endDate: tomorrow,
     page: 1,
-    pageSize: 10,
+    pageSize: 5,
     movementType: undefined,
     batchCode: undefined,
   });
