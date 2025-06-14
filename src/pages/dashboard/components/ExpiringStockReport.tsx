@@ -26,9 +26,9 @@ import { format } from 'date-fns';
 
 export function ExpiringStockReport() {
   const [filters, setFilters] = useState<GetExpiringStockDto>({
-    status: 'all',
+    status: 'expired',
     page: 1,
-    pageSize: 10,
+    pageSize: 5,
     daysUntilExpiration: 10,
   });
 
@@ -100,7 +100,6 @@ export function ExpiringStockReport() {
               <SelectValue placeholder="Estado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="expired">Vencidos</SelectItem>
               <SelectItem value="expiring-soon">Por Vencer</SelectItem>
             </SelectContent>
@@ -147,7 +146,9 @@ export function ExpiringStockReport() {
                       <TableCell>{item.batchCode}</TableCell>
                       <TableCell>{item.remainingQuantity}</TableCell>
                       <TableCell>{format(item.expirationDate, 'dd/MM/yyyy')}</TableCell>
-                      <TableCell>{Math.abs(daysUntilExpiration)}</TableCell>
+                      <TableCell>{
+                        isExpired ? 'Vencido' : Math.abs(daysUntilExpiration)
+                        }</TableCell>
                       <TableCell>
                         <Badge
                           variant={isExpired ? "destructive" : "warning"}

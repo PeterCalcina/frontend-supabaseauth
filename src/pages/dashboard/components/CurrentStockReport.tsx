@@ -18,7 +18,7 @@ import {
 export function CurrentStockReport() {
   const [filters, setFilters] = useState<GetCurrentStockDto>({
     page: 1,
-    pageSize: 10,
+    pageSize: 5,
     itemName: '',
   });
 
