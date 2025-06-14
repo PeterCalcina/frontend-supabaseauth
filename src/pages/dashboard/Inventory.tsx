@@ -100,7 +100,7 @@ export function Inventory() {
                 <Table.Cell>{product.sku}</Table.Cell>
                 <Table.Cell>{product.qty}</Table.Cell>
                 <Table.Cell>Bs.{product.cost.toFixed(2)}</Table.Cell>
-                <Table.Cell>{product.profitMargin.toFixed(2)}%</Table.Cell>
+                <Table.Cell>{product.profitMargin}%</Table.Cell>
                 <Table.Cell>
                   {product.lastEntry && isValid(new Date(product.lastEntry))
                     ? format(new Date(product.lastEntry), "PPP", {
