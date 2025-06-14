@@ -23,6 +23,8 @@ export const API_ENDPOINTS_MOVEMENT = {
   createSale: `${MOVEMENT_URL}`,
   createExpiration: `${MOVEMENT_URL}`,
   createExit: `${MOVEMENT_URL}`,
+  updateMovement: (id: number) => `${MOVEMENT_URL}/${id}`,
+  deleteMovement: (id: number) => `${MOVEMENT_URL}/${id}`,
 };
 
 export const API_ENDPOINTS_REPORT = {

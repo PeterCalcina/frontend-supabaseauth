@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, ShoppingCart, ArrowRight } from 'lucide-react';
+import { Plus, ShoppingCart, ArrowRight, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import {
   Table,
@@ -18,22 +18,31 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
+  DialogFooter,
 } from '@/shared/components/ui/dialog';
 import { EntryMovementForm } from './components/EntryMovementForm';
 import { SaleMovementForm } from './components/SaleMovementForm';
 import { ExitMovementForm } from './components/ExitMovementForm';
+import { EditMovementForm } from './components/EditMovementForm';
 import { Movement } from '@/shared/types/movement';
 import { useListInventory } from '@/api/hooks/inventory/useListInventory';
 import { useListMovements } from '@/api/hooks/movement/useListMovements';
+import { useDeleteMovement } from '@/api/hooks/movement/useDeleteMovement';
 import { InventoryItem } from '@/shared/types/inventory';
 import { MovementType } from '@/shared/enum/movement-type.enum';
+import { Loader } from '@/shared/components/ui/loader';
 
 export function Movements() {
   const [isEntryDialogOpen, setIsEntryDialogOpen] = useState(false);
   const [isSaleDialogOpen, setIsSaleDialogOpen] = useState(false);
   const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedMovement, setSelectedMovement] = useState<Movement | null>(null);
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const { data: movements, isLoading: isLoadingMovements } = useListMovements();
+  const deleteMovement = useDeleteMovement();
 
   const isLoading = isLoadingProducts || isLoadingMovements;
 
@@ -44,6 +53,14 @@ export function Movements() {
 
   const getMovementType = (type: MovementType) => {
     return type === MovementType.ENTRY ? 'Entrada' : type === MovementType.EXIT ? 'Salida' : type === MovementType.SALE ? 'Venta' : type === MovementType.EXPIRATION ? 'Vencimiento' : type;
+  };
+
+  const handleDelete = async () => {
+    if (selectedMovement) {
+      await deleteMovement.mutateAsync(selectedMovement.id);
+      setIsDeleteDialogOpen(false);
+      setSelectedMovement(null);
+    }
   };
   
   if (isLoading) {
@@ -137,6 +154,7 @@ export function Movements() {
               <TableHead>Costo Unitario</TableHead>
               <TableHead>Fecha de Expiración</TableHead>
               <TableHead>Descripción</TableHead>
+              <TableHead>Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -155,11 +173,91 @@ export function Movements() {
                   }
                 </TableCell>
                 <TableCell>{movement.description}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    {movement.type === MovementType.ENTRY && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={movement.quantity !== movement.remainingQuantity}
+                          onClick={() => {
+                            setSelectedMovement(movement);
+                            setIsEditDialogOpen(true);
+                          }}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={movement.quantity !== movement.remainingQuantity}
+                          onClick={() => {
+                            setSelectedMovement(movement);
+                            setIsDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Movimiento</DialogTitle>
+          </DialogHeader>
+          {selectedMovement && (
+            <EditMovementForm
+              movement={selectedMovement}
+              onSuccess={() => {
+                setIsEditDialogOpen(false);
+                setSelectedMovement(null);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eliminar Entrada</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar esta entrada? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsDeleteDialogOpen(false);
+                setSelectedMovement(null);
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleteMovement.isPending}
+            >
+              {deleteMovement.isPending ? (
+                <Loader size="sm" message="Eliminando..." />
+              ) : (
+                "Eliminar"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 

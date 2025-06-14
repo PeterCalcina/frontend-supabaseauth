@@ -40,3 +40,8 @@ export const expirationMovementSchema = BaseMovementSchema.omit({
   unitCost: true,
 });
 export type ExpirationMovementDto = z.infer<typeof expirationMovementSchema>;
+
+export const updateMovementSchema = z.object(BaseMovementSchema.shape).extend({
+  remainingQuantity: z.number().min(0),
+});
+export type UpdateMovementDto = z.infer<typeof updateMovementSchema>;
