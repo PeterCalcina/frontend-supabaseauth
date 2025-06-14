@@ -1,24 +1,35 @@
-import { useState } from 'react';
-import { useExpiringStockReport } from '@/api/hooks/report/useReports';
-import { GetExpiringStockDto } from '@/shared/schemas/report.schema';
-import { Card, Input, Button, Loader, Skeleton, Select, Table, Badge } from '@/shared/components/ui';
-import { format } from 'date-fns';
+import { useState } from "react";
+import { useExpiringStockReport } from "@/api/hooks/report/useReports";
+import { GetExpiringStockDto } from "@/shared/schemas/report.schema";
+import {
+  Card,
+  Input,
+  Button,
+  Loader,
+  Skeleton,
+  Select,
+  Table,
+  Badge,
+} from "@/shared/components/ui";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export function ExpiringStockReport() {
   const [filters, setFilters] = useState<GetExpiringStockDto>({
-    status: 'expired',
+    status: "expired",
     page: 1,
     pageSize: 5,
     daysUntilExpiration: 10,
   });
 
-  const { data, isLoading, isFetching, isError } = useExpiringStockReport(filters);
+  const { data, isLoading, isFetching, isError } =
+    useExpiringStockReport(filters);
   const currentPage: number = data?.page ?? filters.page ?? 1;
 
   const handleStatusChange = (value: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      status: value as GetExpiringStockDto['status'],
+      status: value as GetExpiringStockDto["status"],
       page: 1,
     }));
   };
@@ -26,7 +37,7 @@ export function ExpiringStockReport() {
   const handleDaysChange = (value: string) => {
     const days = parseInt(value);
     if (!isNaN(days)) {
-      setFilters(prev => ({
+      setFilters((prev) => ({
         ...prev,
         daysUntilExpiration: days,
         page: 1,
@@ -35,7 +46,7 @@ export function ExpiringStockReport() {
   };
 
   const handlePageChange = (newPage: number) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       page: newPage,
     }));
@@ -116,7 +127,9 @@ export function ExpiringStockReport() {
               </Table.Header>
               <Table.Body>
                 {data?.data?.map((item) => {
-                  const daysUntilExpiration = calculateDaysUntilExpiration(item.expirationDate);
+                  const daysUntilExpiration = calculateDaysUntilExpiration(
+                    item.expirationDate
+                  );
                   const isExpired = daysUntilExpiration < 0;
 
                   return (
@@ -124,14 +137,14 @@ export function ExpiringStockReport() {
                       <Table.Cell>{item.productName}</Table.Cell>
                       <Table.Cell>{item.batchCode}</Table.Cell>
                       <Table.Cell>{item.remainingQuantity}</Table.Cell>
-                      <Table.Cell>{format(item.expirationDate, 'dd/MM/yyyy')}</Table.Cell>
-                      <Table.Cell>{
-                        isExpired ? 'Vencido' : Math.abs(daysUntilExpiration)
-                        }</Table.Cell>
                       <Table.Cell>
-                        <Badge
-                          variant={isExpired ? "destructive" : "warning"}
-                        >
+                        {format(item.expirationDate, "PPP", { locale: es })}
+                      </Table.Cell>
+                      <Table.Cell>
+                        {isExpired ? "Vencido" : Math.abs(daysUntilExpiration)}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Badge variant={isExpired ? "destructive" : "warning"}>
                           {isExpired ? "Vencido" : "Por Vencer"}
                         </Badge>
                       </Table.Cell>
@@ -155,7 +168,7 @@ export function ExpiringStockReport() {
                 </Button>
                 <Button
                   variant="outlineWhite"
-                  onClick={() => handlePageChange(currentPage + 1)} 
+                  onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage >= (data?.totalPages || 1)}
                 >
                   Siguiente
@@ -173,4 +186,4 @@ export function ExpiringStockReport() {
       </Card.Content>
     </Card.Root>
   );
-} 
+}

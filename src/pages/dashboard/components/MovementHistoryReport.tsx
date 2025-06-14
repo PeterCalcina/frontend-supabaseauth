@@ -4,6 +4,7 @@ import { GetMovementHistoryDto } from '@/shared/schemas/report.schema';
 import { MovementType } from '@/shared/enum/movement-type.enum';
 import { Card, Input, Button, Loader, Skeleton, Select, Table } from '@/shared/components/ui';
 import { format, isValid, subDays, addDays } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export function MovementHistoryReport() {
   const today = new Date();
@@ -162,12 +163,12 @@ export function MovementHistoryReport() {
                       <Table.Cell>{movement.quantity}</Table.Cell>
                       <Table.Cell>{movement.unitCost?.toFixed(2) || 'N/A'}</Table.Cell>
                       <Table.Cell>
-                        {movement.createdAt ? format(movement.createdAt, 'dd/MM/yyyy') : 'N/A'}
+                        {movement.createdAt ? format(movement.createdAt, 'PPP', { locale: es }) : 'N/A'}
                       </Table.Cell>
                       <Table.Cell>{movement.batchCode || 'N/A'}</Table.Cell>
                       <Table.Cell>{movement.description || 'N/A'}</Table.Cell>
                       <Table.Cell>
-                        {movement.expirationDate ? format(movement.expirationDate, 'dd/MM/yyyy') : 'Sin fecha'}
+                        {movement.expirationDate ? format(movement.expirationDate, 'PPP', { locale: es }) : 'Sin fecha'}
                       </Table.Cell>
                     </Table.Row>
                   ))
