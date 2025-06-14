@@ -189,14 +189,14 @@ export function MovementHistoryReport() {
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant="outline"
+                  variant="outlineWhite"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage <= 1 || isFetching}
                 >
                   Anterior
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="outlineWhite"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage >= totalPages || isFetching}
                 >
