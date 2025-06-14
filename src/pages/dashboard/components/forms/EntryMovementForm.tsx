@@ -45,6 +45,12 @@ export function EntryMovementForm({ products, onSuccess }: EntryMovementFormProp
   }, [form.watch("quantity"), form.watch("itemId")]);
 
   const onSubmit = async (values: EntryMovementDto) => {
+    if(values.expirationDate && values.expirationDate < new Date()) {
+      form.setError("expirationDate", {
+        message: "La fecha de expiración no puede ser anterior a la fecha actual"
+      });
+      return;
+    }
     const data = {
       ...values,
       expirationDate: hasExpirationDate ? values.expirationDate : undefined,
