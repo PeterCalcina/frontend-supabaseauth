@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, ShoppingCart, ArrowRight, Pencil, Trash2 } from 'lucide-react';
+import { Plus, ShoppingCart, ArrowRight, Pencil, Trash2, Search } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import {
   Table,
@@ -21,6 +21,14 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/shared/components/ui/dialog';
+import { Input } from '@/shared/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
 import { EntryMovementForm } from './components/EntryMovementForm';
 import { SaleMovementForm } from './components/SaleMovementForm';
 import { ExitMovementForm } from './components/ExitMovementForm';
@@ -40,6 +48,9 @@ export function Movements() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedMovement, setSelectedMovement] = useState<Movement | null>(null);
+  const [productNameFilter, setProductNameFilter] = useState('');
+  const [batchCodeFilter, setBatchCodeFilter] = useState('');
+  const [movementTypeFilter, setMovementTypeFilter] = useState<MovementType | 'ALL'>('ALL');
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const { data: movements, isLoading: isLoadingMovements } = useListMovements();
   const deleteMovement = useDeleteMovement();
@@ -62,6 +73,19 @@ export function Movements() {
       setSelectedMovement(null);
     }
   };
+
+  const filteredMovements = movements?.data?.filter((movement) => {
+    const productName = getProductName(movement.itemId).toLowerCase();
+    const batchCode = movement.batchCode.toLowerCase();
+    const productNameFilterLower = productNameFilter.toLowerCase();
+    const batchCodeFilterLower = batchCodeFilter.toLowerCase();
+
+    const matchesProductName = productName.includes(productNameFilterLower);
+    const matchesBatchCode = batchCode.includes(batchCodeFilterLower);
+    const matchesMovementType = movementTypeFilter === 'ALL' || movement.type === movementTypeFilter;
+
+    return matchesProductName && matchesBatchCode && matchesMovementType;
+  });
   
   if (isLoading) {
     return (
@@ -143,6 +167,42 @@ export function Movements() {
         </div>
       </div>
 
+      <div className="flex gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por nombre de producto..."
+            value={productNameFilter}
+            onChange={(e) => setProductNameFilter(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por código de lote..."
+            value={batchCodeFilter}
+            onChange={(e) => setBatchCodeFilter(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+        <Select
+          value={movementTypeFilter}
+          onValueChange={(value) => setMovementTypeFilter(value as MovementType | 'ALL')}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Tipo de movimiento" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">Todos los tipos</SelectItem>
+            <SelectItem value={MovementType.ENTRY}>Entrada</SelectItem>
+            <SelectItem value={MovementType.EXIT}>Salida</SelectItem>
+            <SelectItem value={MovementType.SALE}>Venta</SelectItem>
+            <SelectItem value={MovementType.EXPIRATION}>Vencimiento</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
@@ -158,7 +218,7 @@ export function Movements() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {movements?.data?.map((movement: Movement) => (
+            {filteredMovements?.map((movement: Movement) => (
               <TableRow key={movement.id}>
                 <TableCell>{getMovementType(movement.type)}</TableCell>
                 <TableCell>{getProductName(movement.itemId)}</TableCell>
