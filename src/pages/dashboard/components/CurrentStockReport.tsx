@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useCurrentStockReport } from '@/api/hooks/report/useReports';
 import { GetCurrentStockDto } from '@/shared/schemas/report.schema';
-import { Card, Input, Button, Loader, Skeleton, Table } from '@/shared/components/ui';
+import { Card, Input, Button, Loader, Table } from '@/shared/components/ui';
+import { CurrentStockTableSkeleton } from './skeletons';
 
 export function CurrentStockReport() {
   const [filters, setFilters] = useState<GetCurrentStockDto>({
@@ -21,7 +22,7 @@ export function CurrentStockReport() {
     setFilters(prev => ({
       ...prev,
       itemName: value,
-      page: 1, // Reset to first page on new search
+      page: 1,
     }));
   };
 
@@ -65,15 +66,9 @@ export function CurrentStockReport() {
         </div>
 
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
+            <CurrentStockTableSkeleton />
         ) : (
-          <>
+          <div className="border-zinc-500/20 border-2 rounded-sm">
             <Table.Root>
               <Table.Header>
                 <Table.Row>
@@ -84,7 +79,7 @@ export function CurrentStockReport() {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {reportData.length > 0 ? ( // Verifica si hay datos antes de mapear
+                {reportData.length > 0 ? (
                   reportData.map((item) => (
                     <Table.Row key={item.id}>
                       <Table.Cell>{item.name}</Table.Cell>
@@ -104,33 +99,32 @@ export function CurrentStockReport() {
             </Table.Root>
 
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground pl-5">
                 Mostrando {reportData.length} de {totalItems} resultados
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="outlineWhite"
                   onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1 || isFetching} // Deshabilitar si se está cargando
+                  disabled={currentPage === 1 || isFetching}
                 >
                   Anterior
                 </Button>
                 <Button
                   variant="outlineWhite"
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage >= totalPages || isFetching} // Deshabilitar si se está cargando
+                  disabled={currentPage >= totalPages || isFetching}
                 >
                   Siguiente
                 </Button>
               </div>
             </div>
-          </>
+          </div>
         )}
 
-        {/* Overlay de isFetching (solo si no es la carga inicial) */}
         {isFetching && !isLoading && (
           <div className="absolute inset-0 bg-background/50 flex items-center justify-center rounded-lg">
-            <Loader size="sm" /> {/* O tu spinner de carga */}
+            <Loader size="sm" />
           </div>
         )}
       </Card.Content>

@@ -6,13 +6,13 @@ import {
   Input,
   Button,
   Loader,
-  Skeleton,
   Select,
   Table,
   Badge,
 } from "@/shared/components/ui";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { ExpiringStockTableSkeleton } from "./skeletons";
 
 export function ExpiringStockReport() {
   const [filters, setFilters] = useState<GetExpiringStockDto>({
@@ -107,13 +107,9 @@ export function ExpiringStockReport() {
         </div>
 
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
+            <ExpiringStockTableSkeleton />
         ) : (
-          <>
+          <div className="border-zinc-500/20 border-2 rounded-sm">
             <Table.Root>
               <Table.Header>
                 <Table.Row>
@@ -155,7 +151,7 @@ export function ExpiringStockReport() {
             </Table.Root>
 
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground pl-5">
                 Mostrando {data?.data.length} de {data?.total} resultados
               </div>
               <div className="flex gap-2">
@@ -175,7 +171,7 @@ export function ExpiringStockReport() {
                 </Button>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {isFetching && !isLoading && (

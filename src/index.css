@@ -112,6 +112,9 @@
 .text-dark-blue {
   color: var(--dark-blue);
 }
+.text-card-foreground {
+  color: var(--card-foreground);
+}
 .bg-primary {
   background-color: var(--primary);
 }
@@ -139,9 +142,12 @@
 .bg-card {
   background-color: var(--card);
 }
+.bg-muted-foreground {
+  background-color: var(--muted-foreground);
+}
 
-.text-card-foreground {
-  color: var(--card-foreground);
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 /* Border Radius */
@@ -156,34 +162,11 @@
 }
 
 /* Animations */
-/* Accordion Down */
-@keyframes accordion-down {
-  from {
-    height: 0;
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
   }
-  to {
-    height: var(
-      --radix-accordion-content-height
-    ); /* You'll need to ensure this CSS variable is set by your JS for Radix components */
+  50% {
+    opacity: 1;
   }
-}
-
-.animate-accordion-down {
-  animation: accordion-down 0.2s ease-out;
-}
-
-/* Accordion Up */
-@keyframes accordion-up {
-  from {
-    height: var(
-      --radix-accordion-content-height
-    ); /* You'll need to ensure this CSS variable is set by your JS for Radix components */
-  }
-  to {
-    height: 0;
-  }
-}
-
-.animate-accordion-up {
-  animation: accordion-up 0.2s ease-out;
 }

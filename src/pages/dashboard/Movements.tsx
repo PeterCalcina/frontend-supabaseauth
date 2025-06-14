@@ -9,13 +9,26 @@ import {
   Trash2,
   Search,
 } from "lucide-react";
-import { Button, Table, Skeleton, Dialog, Input, Select, Loader } from "@/shared/components/ui";
+import {
+  Button,
+  Table,
+  Dialog,
+  Input,
+  Select,
+  Loader,
+} from "@/shared/components/ui";
 import { Movement } from "@/shared/types/movement";
 import { useListInventory } from "@/api/hooks/inventory";
-import { EntryMovementForm, SaleMovementForm, ExitMovementForm, EditMovementForm } from "./components";
+import {
+  EntryMovementForm,
+  SaleMovementForm,
+  ExitMovementForm,
+  EditMovementForm,
+} from "./components";
 import { useListMovements, useDeleteMovement } from "@/api/hooks/movement";
 import { InventoryItem } from "@/shared/types";
 import { MovementType } from "@/shared/enum/movement-type.enum";
+import { MovementsTableSkeleton } from "./components/skeletons";
 
 export function Movements() {
   const [isEntryDialogOpen, setIsEntryDialogOpen] = useState(false);
@@ -71,26 +84,12 @@ export function Movements() {
     const batchCodeFilterLower = batchCodeFilter.toLowerCase();
 
     const matchesProductName = productName.includes(productNameFilterLower);
-    const matchesBatchCode = batchCode.includes(batchCodeFilterLower);  
+    const matchesBatchCode = batchCode.includes(batchCodeFilterLower);
     const matchesMovementType =
       movementTypeFilter === "ALL" || movement.type === movementTypeFilter;
 
     return matchesProductName && matchesBatchCode && matchesMovementType;
   });
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <Skeleton className="h-8 w-[200px]" />
-          <Skeleton className="h-10 w-[100px]" />
-        </div>
-        <div className="border rounded-lg">
-          <Skeleton className="h-[400px]" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
@@ -147,7 +146,7 @@ export function Movements() {
             onOpenChange={setIsSaleDialogOpen}
           >
             <Dialog.Trigger asChild>
-              <Button variant="secondary">
+              <Button variant="success">
                 <ShoppingCart className="mr-2 h-4 w-4" />
                 Venta de producto
               </Button>
@@ -200,80 +199,86 @@ export function Movements() {
             <Select.Item value={MovementType.ENTRY}>Entrada</Select.Item>
             <Select.Item value={MovementType.EXIT}>Salida</Select.Item>
             <Select.Item value={MovementType.SALE}>Venta</Select.Item>
-            <Select.Item value={MovementType.EXPIRATION}>Vencimiento</Select.Item>
+            <Select.Item value={MovementType.EXPIRATION}>
+              Vencimiento
+            </Select.Item>
           </Select.Content>
         </Select.Root>
       </div>
 
-      <div className="border rounded-sm">
-        <Table.Root>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>Tipo</Table.Head>
-              <Table.Head>Producto</Table.Head>
-              <Table.Head>Lote</Table.Head>
-              <Table.Head>Cantidad</Table.Head>
-              <Table.Head>Costo Unitario</Table.Head>
-              <Table.Head>Fecha de Expiración</Table.Head>
-              <Table.Head>Descripción</Table.Head>
-              <Table.Head>Acciones</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {filteredMovements?.map((movement: Movement) => (
-              <Table.Row key={movement.id}>
-                <Table.Cell>{getMovementType(movement.type)}</Table.Cell>
-                <Table.Cell>{getProductName(movement.itemId)}</Table.Cell>
-                <Table.Cell>{movement.batchCode}</Table.Cell>
-                <Table.Cell>{movement.quantity}</Table.Cell>
-                <Table.Cell>Bs.{movement.unitCost.toFixed(2)}</Table.Cell>
-                <Table.Cell>
-                  {movement.expirationDate
-                    ? format(movement.expirationDate, "PPP", {
-                        locale: es,
-                      })
-                    : "Sin fecha de expiración"}
-                </Table.Cell>
-                <Table.Cell>{movement.description}</Table.Cell>
-                <Table.Cell>
-                  <div className="flex gap-2">
-                    {movement.type === MovementType.ENTRY && (
-                      <>
-                        <Button
-                          variant="secondary"
-                          size="icon"
-                          disabled={
-                            movement.quantity !== movement.remainingQuantity
-                          }
-                          onClick={() => {
-                            setSelectedMovement(movement);
-                            setIsEditDialogOpen(true);
-                          }}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          disabled={
-                            movement.quantity !== movement.remainingQuantity
-                          }
-                          onClick={() => {
-                            setSelectedMovement(movement);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </Table.Cell>
+      {isLoading ? (
+        <MovementsTableSkeleton />
+      ) : (
+        <div className="border-zinc-500/20 border-2 rounded-sm">
+          <Table.Root>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Tipo</Table.Head>
+                <Table.Head>Producto</Table.Head>
+                <Table.Head>Lote</Table.Head>
+                <Table.Head>Cantidad</Table.Head>
+                <Table.Head>Costo Unitario</Table.Head>
+                <Table.Head>Fecha de Expiración</Table.Head>
+                <Table.Head>Descripción</Table.Head>
+                <Table.Head>Acciones</Table.Head>
               </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Root>
-      </div>
+            </Table.Header>
+            <Table.Body>
+              {filteredMovements?.map((movement: Movement) => (
+                <Table.Row key={movement.id}>
+                  <Table.Cell>{getMovementType(movement.type)}</Table.Cell>
+                  <Table.Cell>{getProductName(movement.itemId)}</Table.Cell>
+                  <Table.Cell>{movement.batchCode}</Table.Cell>
+                  <Table.Cell>{movement.quantity}</Table.Cell>
+                  <Table.Cell>Bs.{movement.unitCost.toFixed(2)}</Table.Cell>
+                  <Table.Cell>
+                    {movement.expirationDate
+                      ? format(movement.expirationDate, "PPP", {
+                          locale: es,
+                        })
+                      : "Sin fecha de expiración"}
+                  </Table.Cell>
+                  <Table.Cell>{movement.description}</Table.Cell>
+                  <Table.Cell>
+                    <div className="flex gap-2 justify-center">
+                      {movement.type === MovementType.ENTRY && (
+                        <>
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            disabled={
+                              movement.quantity !== movement.remainingQuantity
+                            }
+                            onClick={() => {
+                              setSelectedMovement(movement);
+                              setIsEditDialogOpen(true);
+                            }}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            disabled={
+                              movement.quantity !== movement.remainingQuantity
+                            }
+                            onClick={() => {
+                              setSelectedMovement(movement);
+                              setIsDeleteDialogOpen(true);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        </div>
+      )}
 
       <Dialog.Root open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <Dialog.Content>

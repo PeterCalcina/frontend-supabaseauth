@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useMovementHistoryReport } from '@/api/hooks/report/useReports';
 import { GetMovementHistoryDto } from '@/shared/schemas/report.schema';
 import { MovementType } from '@/shared/enum/movement-type.enum';
-import { Card, Input, Button, Loader, Skeleton, Select, Table } from '@/shared/components/ui';
+import { Card, Input, Button, Loader, Select, Table } from '@/shared/components/ui';
 import { format, isValid, subDays, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { MovementHistoryTableSkeleton } from './skeletons';
 
 export function MovementHistoryReport() {
   const today = new Date();
@@ -133,14 +134,9 @@ export function MovementHistoryReport() {
         </div>
 
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
+          <MovementHistoryTableSkeleton />
         ) : (
-          <>
+          <div className="border-zinc-500/20 border-2 rounded-sm">
             <Table.Root>
               <Table.Header>
                 <Table.Row>
@@ -183,7 +179,7 @@ export function MovementHistoryReport() {
             </Table.Root>
 
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground pl-5">
                 Mostrando {movementHistoryData.length} de {totalItems} resultados
               </div>
               <div className="flex gap-2">
@@ -203,7 +199,7 @@ export function MovementHistoryReport() {
                 </Button>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {isFetching && !isLoading && (
