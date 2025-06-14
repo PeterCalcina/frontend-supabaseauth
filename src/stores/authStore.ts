@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { User } from '@supabase/supabase-js'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { queryClient } from '@/api/client/queryClient'
 
 interface AuthState {
   user: User | null
@@ -17,7 +18,11 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
       setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+      logout: () => {
+        set({ user: null, token: null, isAuthenticated: false });
+        localStorage.removeItem("auth");
+        queryClient.clear();
+      },
     }),
     {
       name: "auth",
