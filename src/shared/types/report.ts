@@ -15,7 +15,7 @@ export interface MovementHistoryReport {
   type: MovementType;
   quantity: number;
   unitCost: number;
-  date: Date;
+  createdAt: Date;
   batchCode: string;
   description: string;
   expirationDate?: Date;
@@ -29,7 +29,7 @@ export interface ExpiringStockReport {
   remainingQuantity: number;
   unitCost: number;
   expirationDate: Date;
-  date: Date;
+  createdAt: Date;
   productName?: string;
   productId?: number;
   isExpired: boolean;

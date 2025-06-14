@@ -143,7 +143,6 @@ export function MovementHistoryReport() {
             <Table.Root>
               <Table.Header>
                 <Table.Row>
-                  <Table.Head>ID Movimiento</Table.Head>
                   <Table.Head>Tipo</Table.Head>
                   <Table.Head>Nombre de Producto</Table.Head>
                   <Table.Head>Cantidad</Table.Head>
@@ -158,13 +157,12 @@ export function MovementHistoryReport() {
                 {movementHistoryData.length > 0 ? (
                   movementHistoryData.map((movement) => (
                     <Table.Row key={movement.id}>
-                      <Table.Cell>{movement.id}</Table.Cell>
                       <Table.Cell>{movement.type}</Table.Cell>
                       <Table.Cell>{movement.productName || 'N/A'}</Table.Cell>
                       <Table.Cell>{movement.quantity}</Table.Cell>
                       <Table.Cell>{movement.unitCost?.toFixed(2) || 'N/A'}</Table.Cell>
                       <Table.Cell>
-                        {movement.date ? format(movement.date, 'dd/MM/yyyy') : 'N/A'}
+                        {movement.createdAt ? format(movement.createdAt, 'dd/MM/yyyy') : 'N/A'}
                       </Table.Cell>
                       <Table.Cell>{movement.batchCode || 'N/A'}</Table.Cell>
                       <Table.Cell>{movement.description || 'N/A'}</Table.Cell>

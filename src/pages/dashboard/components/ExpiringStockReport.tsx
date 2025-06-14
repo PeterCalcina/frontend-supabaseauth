@@ -106,7 +106,6 @@ export function ExpiringStockReport() {
             <Table.Root>
               <Table.Header>
                 <Table.Row>
-                  <Table.Head>ID Producto</Table.Head>
                   <Table.Head>Nombre de Producto</Table.Head>
                   <Table.Head>Lote</Table.Head>
                   <Table.Head>Cantidad Restante</Table.Head>
@@ -122,7 +121,6 @@ export function ExpiringStockReport() {
 
                   return (
                     <Table.Row key={item.id}>
-                      <Table.Cell>{item.productId}</Table.Cell>
                       <Table.Cell>{item.productName}</Table.Cell>
                       <Table.Cell>{item.batchCode}</Table.Cell>
                       <Table.Cell>{item.remainingQuantity}</Table.Cell>
