@@ -19,8 +19,6 @@ export function Expirations() {
   const { data: products, isLoading: isLoadingProducts } = useListInventory();
   const createExpirationMovement = useCreateExpirationMovement();
 
-  console.log(movements);
-
   const isLoading = isLoadingMovements || isLoadingProducts;
 
   const getProductName = (itemId: number) => {
@@ -59,7 +57,7 @@ export function Expirations() {
         <div className="flex justify-between items-center">
           <Skeleton className="h-8 w-[200px]" />
         </div>
-        <div className="border rounded-lg">
+        <div className="border rounded-sm">
           <Skeleton className="h-[400px]" />
         </div>
       </div>
@@ -70,7 +68,7 @@ export function Expirations() {
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-bold mb-4">Productos Vencidos</h2>
-        <div className="border rounded-lg">
+        <div className="border rounded-sm">
           <Table.Root>
             <Table.Header>
               <Table.Row>
@@ -98,7 +96,7 @@ export function Expirations() {
                   </Table.Cell>
                   <Table.Cell>
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       size="icon"
                       onClick={() => handleExpire(movement)}
                       disabled={createExpirationMovement.isPending}
@@ -122,7 +120,7 @@ export function Expirations() {
 
       <div>
         <h2 className="text-2xl font-bold mb-4">Productos por Vencer</h2>
-        <div className="border rounded-lg">
+        <div className="border rounded-sm">
           <Table.Root>
             <Table.Header>
               <Table.Row>

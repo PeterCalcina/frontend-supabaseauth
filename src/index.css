@@ -8,9 +8,11 @@
   --palette-coral: #ff6361;
   --palette-orange: #ffa600;
   --palette-white: #f5f5f5;
+  --palette-off-white: #F9FAFB;
 }
 :root {
   --border: var(--palette-dark-blue);
+  --off-white: var(--palette-off-white);
 
   --background: var(--palette-white);
   --foreground: var(--palette-dark-blue);
@@ -18,8 +20,8 @@
   --primary: var(--palette-dark-blue);
   --primary-foreground: var(--palette-white);
 
-  --secondary: #f0f0f0;
-  --secondary-foreground: var(--palette-purple);
+  --secondary: var(--palette-orange);
+  --secondary-foreground: var(--palette-white);
 
   --destructive: var(--palette-coral);
   --destructive-foreground: var(--palette-white);
@@ -36,7 +38,11 @@
   --card: var(--palette-white);
   --card-foreground: var(--palette-dark-blue);
   --radius: 0.5rem;
+
+  --dark-blue: var(--palette-dark-blue);
+
 }
+
 
 /* Dark mode */
 .dark {
@@ -85,17 +91,32 @@
 .bg-border {
   background-color: var(--border);
 }
+.border-off-white {
+  border-color: rgb(249, 250, 251, 0.2);
+}
 .text-input {
   color: var(--input);
 }
 .text-primary-foreground {
   color: var(--primary-foreground);
 }
+.text-secondary-foreground {
+  color: var(--secondary-foreground);
+}
 .text-destructive-foreground {
   color: var(--destructive-foreground);
 }
+.text-muted {
+  color: var(--muted);
+}
+.text-dark-blue {
+  color: var(--dark-blue);
+}
 .bg-primary {
   background-color: var(--primary);
+}
+.bg-secondary {
+  background-color: var(--secondary);
 }
 .bg-destructive {
   background-color: var(--destructive);
@@ -103,7 +124,18 @@
 .bg-background {
   background-color: var(--background);
 }
-
+.bg-dark-blue {
+  background-color: var(--palette-dark-blue);
+}
+.bg-purple {
+  background-color: var(--palette-purple);
+}
+.bg-magenta {
+  background-color: var(--palette-magenta);
+}
+.bg-off-white {
+  background-color: rgb(245 245 245 / 1);
+}
 .bg-card {
   background-color: var(--card);
 }

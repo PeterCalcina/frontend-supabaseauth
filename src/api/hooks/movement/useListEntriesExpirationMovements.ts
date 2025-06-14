@@ -6,7 +6,7 @@ export const useListEntriesByExpirationDateMovements = () => {
   const { listEntriesByExpirationDate } = movementService();
 
   return useQuery({
-    queryKey: ['movements', MovementType.ENTRY],
+    queryKey: ['movements', MovementType.ENTRY, 'expiration'],
     queryFn: listEntriesByExpirationDate,
   });
 }; 

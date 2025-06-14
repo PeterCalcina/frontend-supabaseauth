@@ -56,7 +56,7 @@ export function Inventory() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Inventario</h1>
+        <h1 className="text-3xl font-bold text-dark-blue">Inventario</h1>
         <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <Dialog.Trigger asChild>
             <Button onClick={handleCreate}>
@@ -80,7 +80,7 @@ export function Inventory() {
         </Dialog.Root>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border-zinc-500/20 border-2 rounded-sm">
         <Table.Root>
           <Table.Header>
             <Table.Row>
@@ -110,14 +110,16 @@ export function Inventory() {
                 </Table.Cell>
                 <Table.Cell className="text-right">
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     size="icon"
+                    className="mr-2"
                     onClick={() => handleEdit(product)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
+
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="icon"
                     onClick={() => handleDelete(product)}
                   >
@@ -144,7 +146,7 @@ export function Inventory() {
           </Dialog.Header>
           <Dialog.Footer>
             <Button
-              variant="outline"
+              variant="outlineWhite"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               Cancelar

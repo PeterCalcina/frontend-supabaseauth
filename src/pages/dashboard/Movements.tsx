@@ -205,7 +205,7 @@ export function Movements() {
         </Select.Root>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-sm">
         <Table.Root>
           <Table.Header>
             <Table.Row>
@@ -240,7 +240,7 @@ export function Movements() {
                     {movement.type === MovementType.ENTRY && (
                       <>
                         <Button
-                          variant="ghost"
+                          variant="secondary"
                           size="icon"
                           disabled={
                             movement.quantity !== movement.remainingQuantity
@@ -253,7 +253,7 @@ export function Movements() {
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
-                          variant="ghost"
+                          variant="destructive"
                           size="icon"
                           disabled={
                             movement.quantity !== movement.remainingQuantity
@@ -306,7 +306,7 @@ export function Movements() {
           </Dialog.Header>
           <Dialog.Footer>
             <Button
-              variant="outline"
+              variant="outlineWhite"
               onClick={() => {
                 setIsDeleteDialogOpen(false);
                 setSelectedMovement(null);

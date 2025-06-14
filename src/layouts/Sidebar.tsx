@@ -29,29 +29,32 @@ const navigation = [
     name: "Reportes",
     href: "/dashboard/reports",
     icon: BarChart3,
-  }
+  },
 ];
 
 export function Sidebar() {
   const { logout } = useAuthStore();
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
   return (
-    <div className="w-64 border-r bg-background">
-      <nav className="space-y-1 p-4">
+    <div className="w-64 bg-dark-blue text-muted flex flex-col">
+      <div className="p-4 border-b border-off-white">
+        <h2 className="text-xl font-bold flex items-center">Dashboard</h2>
+      </div>
+      <nav className="flex-1 overflow-auto py-4">
         {navigation.map((item) => (
           <NavLink
             key={item.name}
             to={item.href}
             className={({ isActive }) =>
-              `flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+              `flex items-center px-4 py-3 text-md ${
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-purple text-white"
+                  : "text-off-white hover:bg-purple-500/20"
               }`
             }
           >
@@ -60,9 +63,13 @@ export function Sidebar() {
           </NavLink>
         ))}
 
-        <Button variant="outline" onClick={handleLogout} className="mt-4">
+        <Button
+          variant="outlineTransparent"
+          onClick={handleLogout}
+          className="mt-4 w-full justify-start"
+        >
           <LogOut className="mr-3 h-5 w-5" />
-          Cerrar Sesión
+          <span className="text-md">Cerrar Sesión</span>
         </Button>
       </nav>
     </div>
