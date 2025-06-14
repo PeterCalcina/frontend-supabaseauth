@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/shared/lib/supabase'
 import { useToastStore } from '@/stores/toastStore'
-import { Button } from '@/shared/components/ui/button'
-import { Input } from '@/shared/components/ui/input'
-import { Card } from '@/shared/components/ui/card'
+import { Button, Input, Card, Loader } from '@/shared/components/ui'
 
 export function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -94,7 +92,7 @@ export function RegisterPage() {
               className="w-full"
               disabled={loading}
             >
-              {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+              {loading ? <Loader size="sm" message="Creando cuenta..." /> : 'Crear Cuenta'}
             </Button>
             <p className="text-sm text-center text-gray-600">
               ¿Ya tienes una cuenta?{' '}
