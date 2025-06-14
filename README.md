@@ -1,54 +1,115 @@
-# React + TypeScript + Vite
+# DoumusAI Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descripción
+Frontend de la aplicación DoumusAI, una plataforma moderna construida con React y TypeScript que ofrece una interfaz de usuario intuitiva y responsiva.
 
-Currently, two official plugins are available:
+## Tecnologías Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Frameworks y Librerías Principales
+- React 19.1.0
+- TypeScript 5.8.3
+- Vite 6.3.5
+- React Router DOM 7.6.2
+- TailwindCSS 4.1.8
 
-## Expanding the ESLint configuration
+### Estado y Gestión de Datos
+- Zustand 5.0.5 (Gestión de estado)
+- React Query 5.80.6 (Manejo de datos del servidor)
+- Supabase 2.50.0 (Backend as a Service)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### UI/UX
+- Radix UI (Componentes accesibles)
+  - Dialog
+  - Checkbox
+  - Label
+  - Select
+  - Slot
+- Lucide React (Iconos)
+- Tailwind Merge
+- Class Variance Authority
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Formularios y Validación
+- React Hook Form 7.57.0
+- Zod 3.25.61
+- Hookform Resolvers
+
+### Herramientas de Desarrollo
+- ESLint
+- TypeScript
+- PostCSS
+- Autoprefixer
+
+## Requisitos Previos
+- Node.js (versión recomendada: 18.x o superior)
+- npm o yarn
+
+## Instalación
+
+1. Clona el repositorio:
+```bash
+git clone [URL_DEL_REPOSITORIO]
+cd frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Instala las dependencias:
+```bash
+npm install
+# o
+yarn install
 ```
+
+3. Configura las variables de entorno:
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+```
+VITE_SUPABASE_URL=tu_url_de_supabase
+VITE_SUPABASE_ANON_KEY=tu_clave_anonima_de_supabase
+```
+
+## Desarrollo
+
+Para iniciar el servidor de desarrollo:
+```bash
+npm run dev
+# o
+yarn dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`
+
+## Construcción
+
+Para crear una versión de producción:
+```bash
+npm run build
+# o
+yarn build
+```
+
+## Estructura del Proyecto
+```
+frontend/
+├── src/
+│   ├── components/     # Componentes reutilizables
+│   ├── pages/         # Páginas de la aplicación
+│   ├── hooks/         # Custom hooks
+│   ├── store/         # Estado global (Zustand)
+│   ├── types/         # Definiciones de TypeScript
+│   ├── utils/         # Utilidades y helpers
+│   └── App.tsx        # Componente principal
+├── public/            # Archivos estáticos
+└── ...
+```
+
+## Características Principales
+- Interfaz de usuario moderna y responsiva
+- Gestión de estado eficiente con Zustand
+- Validación de formularios robusta
+- Integración con Supabase para backend
+- Componentes accesibles con Radix UI
+- Visualización de datos con Recharts
+
+## Herramientas de IA Utilizadas en el Desarrollo
+- Cursor: Para asistencia en el desarrollo y generación de código
+- ChatGPT: Para resolución de problemas y optimización de código
+- Gemini: Para análisis de código y sugerencias de mejora
+
