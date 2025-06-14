@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, Input, Loader, Select } from "@/shared/components/ui";
 import { InventoryItem } from "@/shared/types/inventory";
-import { saleMovementSchema, SaleMovementDto } from "@/shared/schemas/movement.schema";
+import {
+  saleMovementSchema,
+  SaleMovementDto,
+} from "@/shared/schemas/movement.schema";
 import { MovementType } from "@/shared/enum/movement-type.enum";
 import { useGetInventory } from "@/api/hooks/inventory";
 import { useCreateSaleMovement } from "@/api/hooks/movement";
@@ -13,13 +16,16 @@ interface SaleMovementFormProps {
   onSuccess: () => void;
 }
 
-export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps) {
+export function SaleMovementForm({
+  products,
+  onSuccess,
+}: SaleMovementFormProps) {
   const form = useForm<SaleMovementDto>({
     resolver: zodResolver(saleMovementSchema),
     defaultValues: {
       type: MovementType.SALE,
       itemId: 0,
-      quantity: 1,
+      quantity: 0,
       description: "",
       unitCost: 0,
     },
@@ -39,17 +45,26 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
       form.setValue("unitCost", constoFinal);
       form.setValue(
         "description",
-        `Venta de ${quantity} productos de ${product.name} a Bs.${total.toFixed(2)}`
+        `Venta de ${quantity} productos de ${product.name} a Bs.${total.toFixed(
+          2
+        )}`
       );
     }
   }, [form.watch("quantity"), form.watch("itemId")]);
 
   const calculateFinalCost = ({ cost, profitMargin }: InventoryItem) => {
-    const constoFinal = cost * (1 + (profitMargin / 100));
+    const constoFinal = cost * (1 + profitMargin / 100);
     return constoFinal;
-  }
+  };
 
   const onSubmit = async (values: SaleMovementDto) => {
+    if (values.quantity === 0) {
+      form.setError("quantity", {
+        message: "La cantidad no puede ser 0",
+      });
+      return;
+    }
+    
     await createSaleMovement.mutateAsync(values);
     onSuccess();
   };
@@ -63,7 +78,10 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
           render={({ field }) => (
             <Form.Item>
               <Form.Label>Producto</Form.Label>
-              <Select.Root onValueChange={(value) => field.onChange(Number(value))} value={field.value.toString()}>
+              <Select.Root
+                onValueChange={(value) => field.onChange(Number(value))}
+                value={field.value.toString()}
+              >
                 <Form.Control>
                   <Select.Trigger>
                     <Select.Value placeholder="Selecciona el producto" />
@@ -90,7 +108,9 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
             </div>
             <div>
               <p className="text-sm font-medium">Precio unitario</p>
-              <p className="text-2xl font-bold">Bs.{calculateFinalCost(inventory.data).toFixed(2)}</p>
+              <p className="text-2xl font-bold">
+                Bs.{calculateFinalCost(inventory.data).toFixed(2)}
+              </p>
             </div>
           </div>
         )}
@@ -104,7 +124,7 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
               <Form.Control>
                 <Input
                   type="number"
-                  min="1"
+                  min="0"
                   max={inventory?.data?.qty}
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
@@ -129,7 +149,11 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isLoading || inventory?.data?.qty === 0}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading || inventory?.data?.qty === 0}
+        >
           {isLoading ? (
             <Loader size="sm" message="Registrando..." />
           ) : (
@@ -139,4 +163,4 @@ export function SaleMovementForm({ products, onSuccess }: SaleMovementFormProps)
       </form>
     </Form.Root>
   );
-} 
+}

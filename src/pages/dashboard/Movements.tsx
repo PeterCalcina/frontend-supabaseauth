@@ -218,7 +218,6 @@ export function Movements() {
                 <Table.Head>Lote</Table.Head>
                 <Table.Head>Cantidad</Table.Head>
                 <Table.Head>Costo Unitario</Table.Head>
-                <Table.Head>Fecha de Expiración</Table.Head>
                 <Table.Head>Descripción</Table.Head>
                 <Table.Head>Acciones</Table.Head>
               </Table.Row>
@@ -231,13 +230,6 @@ export function Movements() {
                   <Table.Cell>{movement.batchCode}</Table.Cell>
                   <Table.Cell>{movement.quantity}</Table.Cell>
                   <Table.Cell>Bs.{movement.unitCost.toFixed(2)}</Table.Cell>
-                  <Table.Cell>
-                    {movement.expirationDate
-                      ? format(movement.expirationDate, "PPP", {
-                          locale: es,
-                        })
-                      : "Sin fecha de expiración"}
-                  </Table.Cell>
                   <Table.Cell>{movement.description}</Table.Cell>
                   <Table.Cell>
                     <div className="flex gap-2 justify-center">
