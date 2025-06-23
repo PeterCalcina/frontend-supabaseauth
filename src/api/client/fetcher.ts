@@ -41,7 +41,7 @@ export const useAuthFetcher = () => {
     });
 
     if (!res.ok) {
-      const errorResponse: Response<any> | null = await res
+      const errorResponse: Response<T> | null = await res
         .json()
         .catch(() => null);
 
