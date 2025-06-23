@@ -1,8 +1,10 @@
 import { useAuthStore } from "@/stores/authStore";
 import { Response } from "@/shared/types/response";
 
+type SearchParams = Record<string, string | number | boolean | undefined>;
+
 interface FetcherOptions extends RequestInit {
-  params?: Record<string, any>;
+  params?: SearchParams;
 }
 
 export const useAuthFetcher = () => {
@@ -17,7 +19,7 @@ export const useAuthFetcher = () => {
     let requestBody: BodyInit | undefined;
 
     if (options.params && (method === 'GET' || method === 'HEAD')) {
-      const queryString = new URLSearchParams(options.params).toString();
+      const queryString = toQueryString(options.params);
       fullUrl = `${url}?${queryString}`;
     }
     else if (options.body && (method !== 'GET' && method !== 'HEAD')) {
@@ -73,3 +75,10 @@ export const useAuthFetcher = () => {
 
   return fetcher;
 };
+
+const toQueryString = (params: SearchParams) =>
+  new URLSearchParams(
+    Object.entries(params)
+      .filter(([, value]) => value !== undefined)
+      .map(([k, v]) => [k, String(v)])
+  ).toString();
