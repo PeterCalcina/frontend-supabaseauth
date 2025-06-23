@@ -22,11 +22,11 @@ export const useMovementHistoryReport = (params: GetMovementHistoryDto) => {
   return useQuery({
     queryKey: ["report", "movement-history", params],
     queryFn: async () => {
-      const processedFilter: Record<string, any> = {};
+      const processedFilter: Partial<GetMovementHistoryDto> = {};
 
       for (const key in params) {
         if (Object.prototype.hasOwnProperty.call(params, key)) {
-          const value = (params as any)[key];
+          const value = params[key as keyof GetMovementHistoryDto];
 
           if (value !== undefined && value !== null && value !== "") {
             if (value instanceof Date) {

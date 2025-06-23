@@ -25,7 +25,7 @@ export function MovementHistoryReport() {
 
   const movementHistoryData = data?.data || [];
   const totalItems = data?.total || 0;
-  const currentPage: number = data?.page ?? filters.page ?? 1;
+  const currentPage = filters.page;
   const totalPages = data?.totalPages || 1;
 
   const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
